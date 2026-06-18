@@ -20,11 +20,12 @@ interface IETFTrading {
         uint256 investAmount
     );
 
-    // event InvestWithETH(
-    //     address indexed to,
-    //     uint256 mintAmount,
-    //     uint256 investAmount
-    // );
+    event RedeemedToToken(
+        address indexed srcToken,
+        address indexed to,
+        uint256 redeemAmount,
+        uint256 redeemAmountOut
+    );
 
     function setFee(
         address feeTo,
@@ -52,7 +53,8 @@ interface IETFTrading {
         address srcToken,
         address to,
         uint256 redeemAmount,
-        uint256 minRedeemAmount
+        uint256 minRedeemAmount,
+        bytes[] calldata swapPaths
     ) external;
 
     function getTokens() external view returns (address[] memory tokens);

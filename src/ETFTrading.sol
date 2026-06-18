@@ -7,10 +7,9 @@ import {IETFTrading} from "./interface/IETFTrading.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IETFSwapRouter} from "./interface/IETFSwapRouter.sol";
-import {Path} from "@uniswap/v3-periphery/contracts/libraries/Path.sol";
 
-using Path for bytes;
+import {IETFSwapRouter} from "./interface/IETFSwapRouter.sol";
+import {Path} from "./libraries/Path.sol";
 
 contract ETFTrading is IETFTrading, ERC20, Ownable {
     uint256 public constant HUNDRED_PERCENT = 1_000_000; // 100% = 1,000,000 in basis points
@@ -29,6 +28,9 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
     uint256 internal minMintAmount;
 
     mapping(address => bool) internal tokenExists;
+
+    using Path for bytes;
+    using SafeERC20 for IERC20;
 
     constructor(
         string memory name_,
@@ -133,12 +135,8 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         address srcToken,
         bytes memory swapPath
     ) internal pure returns (bool) {
-        // Check if the swap path is valid for the given target token and source token
-        // This is a placeholder implementation; you should implement your own logic
-        // to validate the swap path based on your requirements.
-
         (address firstToken, address secondToken, ) = swapPath
-            .decodefirstPool();
+            .decodeFirstPool();
 
         if (targetToken == srcToken) {
             if (
@@ -159,7 +157,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
             }
 
             (, secondToken, ) = swapPath.decodeFirstPool();
-            if (sencondToken != srcToken) {
+            if (secondToken != srcToken) {
                 return false;
             }
             return true;
@@ -194,13 +192,13 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         uint256 maxInvestAmount,
         bytes[] calldata swapPaths
     ) external override {
-        address[] memory tokens = getTokens();
+        address[] memory tokens = this.getTokens();
 
         if (tokens.length != swapPaths.length) {
             revert InvalidArrayLength();
         }
 
-        uint256[] memory tokenAmounts = getInvestTokenAmount(mintAmount);
+        uint256[] memory tokenAmounts = this.getInvestTokenAmount(mintAmount);
 
         IERC20(srcToken).safeTransferFrom(
             msg.sender,
@@ -294,7 +292,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         uint256 minRedeemAmount,
         bytes[] calldata swapPaths
     ) external override {
-        address[] memory tokens = getTokens();
+        address[] memory tokens = this.getTokens();
 
         if (tokens.length == 0 || tokens.length != swapPaths.length) {
             revert InvalidArrayLength();
@@ -343,6 +341,9 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         override
         returns (address[] memory tokens)
     {
-        // Implementation here
+        tokens = new address[](ETFWithTokens.length);
+        for (uint256 i = 0; i < ETFWithTokens.length; i++) {
+            tokens[i] = ETFWithTokens[i];
+        }
     }
 }
