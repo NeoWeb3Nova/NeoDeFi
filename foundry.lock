@@ -22,5 +22,17 @@
       "name": "v0.4.1",
       "rev": "258e12e727bfe7f0ec30c51995d01ec88b82efc1"
     }
+  },
+  "lib/v3-core": {
+    "tag": {
+      "name": "v1.0.0",
+      "rev": "e3589b192d0be27e100cd0daaf6c97204fdb1899"
+    }
+  },
+  "lib/v3-periphery": {
+    "tag": {
+      "name": "v1.3.0",
+      "rev": "80f26c86c57b8a5e4b913f42844d4c8bd274d058"
+    }
   }
 }

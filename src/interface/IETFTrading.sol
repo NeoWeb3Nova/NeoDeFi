@@ -13,7 +13,7 @@ interface IETFTrading {
     error OverSlippage();
     error SafeTransferETFFailed();
 
-    event InvestWithToken(
+    event InvestedWithToken(
         address indexed srcToken,
         address indexed to,
         uint256 mintAmount,
