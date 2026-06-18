@@ -1,0 +1,12 @@
+{
+  "git.detectSubmodules": false,
+  "git.autoRepositoryDetection": "openEditors",
+  "files.watcherExclude": {
+    "**/lib/**": true
+  },
+  "search.exclude": {
+    "**/lib": true,
+    "**/out": true,
+    "**/cache": true
+  }
+}
