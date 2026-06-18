@@ -8,7 +8,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IETFSwapRouter} from "./interface/IETFSwapRouter.sol";
-import {Path} from "v3-periphery/contracts/libraries/Path.sol";
+import {Path} from "@uniswap/v3-periphery/contracts/libraries/Path.sol";
 
 using Path for bytes;
 
@@ -223,12 +223,14 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
 
             if (tokens[i] != srcToken) {
                 //这里要把当前的代币换成目标代币，swapExactIn会返回实际投资的金额
-                // totalInvestAmount += IETFSwapRouter(swapRouter).swapExactIn(
-                //     srcToken,
-                //     tokens[i],
-                //     tokenAmounts[i],
-                //     swapPaths[i]
-                // );
+                totalInvestAmount += IETFSwapRouter(swapRouter).exactOutput(
+                    IETFSwapRouter.ExactOutputParams({
+                        path: swapPaths[i],
+                        recipient: address(this),
+                        amountOut: tokenAmounts[i],
+                        amountInMaximum: maxInvestAmount
+                    })
+                );
             } else {
                 totalInvestAmount += tokenAmounts[i];
             }
@@ -244,13 +246,95 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         emit InvestedWithToken(srcToken, to, mintAmount, totalInvestAmount);
     }
 
+    function _redeem(
+        address to,
+        uint256 redeemAmount
+    ) internal returns (uint256[] memory tokenAmounts) {
+        uint256 _totalSupply = totalSupply();
+        tokenAmounts = new uint256[](ETFWithTokens.length);
+
+        if (redeemAmount > balanceOf(msg.sender)) {
+            revert("Insufficient balance");
+        }
+        _burn(msg.sender, redeemAmount);
+
+        if (redeemFee > 0) {
+            uint256 feeAmount = Math.mulDiv(
+                redeemAmount,
+                redeemFee,
+                HUNDRED_PERCENT,
+                Math.Rounding.Floor
+            );
+            redeemAmount -= feeAmount;
+            if (feeAmount > 0) {
+                _mint(feeTo, feeAmount);
+            }
+        }
+
+        for (uint256 i = 0; i < ETFWithTokens.length; i++) {
+            uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(
+                address(this)
+            );
+            tokenAmounts[i] = Math.mulDiv(
+                tokenBalance,
+                redeemAmount,
+                _totalSupply,
+                Math.Rounding.Floor
+            );
+            if (tokenAmounts[i] > 0 && to != address(this)) {
+                IERC20(ETFWithTokens[i]).safeTransfer(to, tokenAmounts[i]);
+            }
+        }
+    }
+
     function redeemToToken(
         address srcToken,
         address to,
         uint256 redeemAmount,
-        uint256 minRedeemAmount
+        uint256 minRedeemAmount,
+        bytes[] calldata swapPaths
     ) external override {
-        // Implementation here
+        address[] memory tokens = getTokens();
+
+        if (tokens.length == 0 || tokens.length != swapPaths.length) {
+            revert InvalidArrayLength();
+        }
+
+        uint256[] memory tokenAmounts = _redeem(address(this), redeemAmount);
+
+        uint256 totalRedeemAmount = 0;
+        for (uint256 i = 0; i < tokens.length; i++) {
+            if (tokenAmounts[i] == 0) {
+                continue;
+            }
+
+            if (!_checkSwapPath(tokens[i], srcToken, swapPaths[i])) {
+                revert InvalidSwapPath(swapPaths[i]);
+            }
+
+            if (tokens[i] != srcToken) {
+                //这里要把当前的代币换成目标代币，swapExactIn会返回实际投资的金额
+                IERC20(tokens[i]).safeTransfer(to, tokenAmounts[i]);
+                totalRedeemAmount += IETFSwapRouter(swapRouter).exactInput(
+                    IETFSwapRouter.ExactInputParams({
+                        path: swapPaths[i],
+                        recipient: address(this),
+                        amountIn: tokenAmounts[i],
+                        amountOutMinimum: minRedeemAmount
+                    })
+                );
+            } else {
+                IERC20(tokens[i]).safeTransfer(to, tokenAmounts[i]);
+                totalRedeemAmount += tokenAmounts[i];
+            }
+        }
+
+        require(
+            totalRedeemAmount >= minRedeemAmount,
+            "Under min redeem amount"
+        );
+
+        emit RedeemedToToken(srcToken, to, redeemAmount, totalRedeemAmount);
     }
 
     function getTokens()

@@ -12,6 +12,10 @@ interface IETFSwapRouter is IUniswapV3SwapCallback {
         ExactInputParams calldata params
     ) external payable returns (uint256 amountOut);
 
+    function exactOutput(
+        ExactOutputParams calldata params
+    ) external payable returns (uint256 amountIn);
+
     struct ExactInputSingleParams {
         address tokenIn;
         address tokenOut;
@@ -28,5 +32,13 @@ interface IETFSwapRouter is IUniswapV3SwapCallback {
         address recipient;
         uint256 amountIn;
         uint256 amountOutMinimum;
+    }
+
+    struct ExactOutputParams {
+        bytes path;
+        address recipient;
+        uint256 deadline;
+        uint256 amountOut;
+        uint256 amountInMaximum;
     }
 }
