@@ -73,7 +73,8 @@ contract MockSwapRouter is IETFSwapRouter {
             "MockRouter: insufficient balance"
         );
 
-        IERC20(tokenOut).transfer(params.recipient, amountOut);
+        (bool success) = IERC20(tokenOut).transfer(params.recipient, amountOut);
+        require(success, "MockRouter: transfer failed");
         return amountOut;
     }
 
@@ -91,7 +92,8 @@ contract MockSwapRouter is IETFSwapRouter {
             "MockRouter: insufficient balance"
         );
 
-        IERC20(tokenOut).transfer(params.recipient, params.amountOut);
+        (bool success) = IERC20(tokenOut).transfer(params.recipient, params.amountOut);
+        require(success, "MockRouter: transfer failed");
 
         // Return the total amount of input token consumed (simulated 0.3 % fee)
         return params.amountOut * 1003 / 1000;
@@ -294,12 +296,11 @@ contract ETFTradingTest is Test {
 
         // Verify fee effects through invest:
         uint256 investAmount = 100e18;
-        uint256 maxAmount = 150e18; // generous to cover router-fee inflation
         bytes[] memory paths = _buildSwapPaths(address(tokenA));
 
         vm.startPrank(USER);
-        tokenA.approve(address(etf), maxAmount);
-        etf.investWithToken(address(tokenA), USER, investAmount, maxAmount, paths);
+        tokenA.approve(address(etf), investAmount);
+        etf.investWithToken(address(tokenA), USER, investAmount, investAmount + 1e18, paths);
         vm.stopPrank();
 
         // investFee = 1000 bps → 0.1 % fee
@@ -528,8 +529,11 @@ contract ETFTradingTest is Test {
         assertEq(tokenC.balanceOf(address(etf)), amounts[2], "contract tokenC");
 
         // User was refunded the difference between maxAmount and actual spend
+        // totalInvestAmount (contract's srcToken balance) = amounts[0] + routerCost(amounts[1]) + routerCost(amounts[2])
+        // where routerCost = amounts[i] * 1003 / 1000 (simulated 0.3 % swap fee)
         uint256 totalInvestAmount = tokenA.balanceOf(address(etf));
         uint256 spent = totalInvestAmount;
+        uint256 remaining = maxAmount - spent;
         assertEq(
             tokenA.balanceOf(USER),
             beforeBal - spent,
