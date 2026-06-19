@@ -14,3 +14,8 @@
   Deployer address: 0x650cd30a58e6893169F41CaC9379D02e7E34653F
   ETFTrading deployed at: 0xdfC341839D4d446c75999B089307f4a618261EE8
 
+// Deploy script:
+// forge script script/DeployETFQuoter.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vv
+== Logs ==
+  Deployer address: 0x650cd30a58e6893169F41CaC9379D02e7E34653F
+  ETFQuoter deployed at: 0xaf0E0FC2F514b0A756377805f94E7B1d7DA70A50
