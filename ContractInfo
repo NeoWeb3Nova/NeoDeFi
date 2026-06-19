@@ -1,0 +1,16 @@
+
+// Deploy script:
+// forge script script/DeployETFTokens.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vv
+== Sepolia Logs ==
+  Deployer address: 0x650cd30a58e6893169F41CaC9379D02e7E34653F
+  NBTC Token deployed at: 0xB02956728Ef9B72AdB805a5507024216dD8F0Cba
+  NETH Token deployed at: 0x027f8455B1a6df72a49B8364BABaEbf8F38D20Bf
+  LINK Token deployed at: 0x028268f8fF62edc596f931E17E2Fb21015f5b0A2
+  USDC Token deployed at: 0x45D2b305d3e2C91b0685A3E7c83bF6D201B88aA2
+
+// Deploy script:
+// forge script script/DeployETFTrading.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vv
+==Sepolia Logs ==
+  Deployer address: 0x650cd30a58e6893169F41CaC9379D02e7E34653F
+  ETFTrading deployed at: 0xdfC341839D4d446c75999B089307f4a618261EE8
+

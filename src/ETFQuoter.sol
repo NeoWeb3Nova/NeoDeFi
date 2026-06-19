@@ -8,10 +8,10 @@ import {IUniswapV3Quoter} from "./interface/IUniswapV3Quoter.sol";
 contract ETFQuoter is IETFQuoter {
     uint24[] public fees;
 
-    IUniswapV3Quoter public constant uniswapV3Quoter =
-        IUniswapV3Quoter(0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6);
+    IUniswapV3Quoter public immutable uniswapV3Quoter;
 
-    constructor() {
+    constructor(address _uniswapV3Quoter) {
+        uniswapV3Quoter = IUniswapV3Quoter(_uniswapV3Quoter);
         fees = [100, 500, 3000, 10000];
     }
 
