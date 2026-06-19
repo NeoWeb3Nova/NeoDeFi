@@ -91,14 +91,17 @@ contract ETFQuoter is IETFQuoter {
                 uint256 _amountOut,
                 uint160[] memory,
                 uint32[] memory,
-                uint256 
+                uint256
             ) {
-                if (amountOut == 0 || _amountOut > amountOut) {
+                if (
+                    _amountOut > 0 && (amountOut == 0 || _amountOut > amountOut)
+                ) {
                     amountOut = _amountOut;
                     path = paths[i];
                 }
             } catch {}
         }
+        require(path.length > 0, "No valid swap path found");
     }
 
     function quoteExactOut(
@@ -113,14 +116,16 @@ contract ETFQuoter is IETFQuoter {
                 uint256 _amountIn,
                 uint160[] memory,
                 uint32[] memory,
-                uint256 
+                uint256
             ) {
-                if (amountIn == 0 || _amountIn < amountIn) {
+                if (_amountIn > 0 && (amountIn == 0 || _amountIn < amountIn)) {
                     amountIn = _amountIn;
                     path = paths[i];
                 }
             } catch {}
         }
+
+        require(path.length > 0, "No valid swap path found");
     }
 
     function getAllPaths(
