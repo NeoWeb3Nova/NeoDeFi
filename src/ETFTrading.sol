@@ -215,7 +215,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
                 continue;
             }
 
-            if (!_checkSwapPath(srcToken, tokens[i], swapPaths[i])) {
+            if (!_checkSwapPath(tokens[i], srcToken, swapPaths[i])) {
                 revert InvalidSwapPath(swapPaths[i]);
             }
 
