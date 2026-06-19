@@ -117,7 +117,7 @@ contract ETFQuoterTest is Test {
         uint256 amountOut = 1 * 10 ** USDC_DECIMALS; // 1 USDC
 
         console.log(
-            "Quoting exact output: NBTC -> %s USDC",
+            "Quoting exact output: %s USDC -> NBTC",
             formatTokenAmount(amountOut, USDC_DECIMALS)
         );
 
@@ -132,8 +132,6 @@ contract ETFQuoterTest is Test {
             );
         } catch (bytes memory reason) {
             console.log("quoteExactOut failed with reason:", string(reason));
-        } catch {
-            console.log("quoteExactOut failed with unknown reason");
         }
     }
 
@@ -156,8 +154,6 @@ contract ETFQuoterTest is Test {
             );
         } catch (bytes memory reason) {
             console.log("quoteExactIn failed with reason:", string(reason));
-        } catch {
-            console.log("quoteExactIn failed with unknown reason");
         }
     }
 }
