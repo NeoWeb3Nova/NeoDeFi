@@ -112,20 +112,30 @@ contract ETFTradingTest is Test {
         deal(LINK_TOKEN, _userAddress, (LINK_PER_SHARE * _etfShareMultiplier));
         deal(USDC_TOKEN, _userAddress, (USDC_PER_SHARE * _etfShareMultiplier));
 
+        console.log("Minted to user:");
         console.log(
-            "Minted to user: %s NBTC, %s NETH, %s LINK, %s USDC",
+            "NBTC: ",
             formatTokenAmount(
                 (NBTC_PER_SHARE * _etfShareMultiplier),
                 NBTC_DECIMALS
-            ),
+            )
+        );
+        console.log(
+            "NETH: ",
             formatTokenAmount(
                 (NETH_PER_SHARE * _etfShareMultiplier),
                 NETH_DECIMALS
-            ),
+            )
+        );
+        console.log(
+            "LINK: ",
             formatTokenAmount(
                 (LINK_PER_SHARE * _etfShareMultiplier),
                 LINK_DECIMALS
-            ),
+            )
+        );
+        console.log(
+            "USDC: ",
             formatTokenAmount(
                 (USDC_PER_SHARE * _etfShareMultiplier),
                 USDC_DECIMALS
@@ -165,12 +175,12 @@ contract ETFTradingTest is Test {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         deployerAddress = vm.addr(privateKey);
 
-        userAddress = address("userAddress");
-        feeCollectorAddress = address("feeCollectorAddress");
+        userAddress = makeAddr("userAddress");
+        feeCollectorAddress = makeAddr("feeCollectorAddress");
 
         address[] memory tokenAddresses = new address[](4);
         tokenAddresses[0] = NBTC_TOKEN;
-        tokenAddresses[1] = NETH_TOKEN;         
+        tokenAddresses[1] = NETH_TOKEN;
         tokenAddresses[2] = LINK_TOKEN;
         tokenAddresses[3] = USDC_TOKEN;
 
