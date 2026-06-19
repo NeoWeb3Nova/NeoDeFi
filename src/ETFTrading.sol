@@ -311,14 +311,13 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
             }
 
             if (tokens[i] != srcToken) {
-                //这里要把当前的代币换成目标代币，swapExactIn会返回实际投资的金额
-                IERC20(tokens[i]).safeTransfer(to, tokenAmounts[i]);
+                IERC20(tokens[i]).approve(swapRouter, tokenAmounts[i]);
                 totalRedeemAmount += IETFSwapRouter(swapRouter).exactInput(
                     IETFSwapRouter.ExactInputParams({
                         path: swapPaths[i],
-                        recipient: address(this),
+                        recipient: to,
                         amountIn: tokenAmounts[i],
-                        amountOutMinimum: minRedeemAmount
+                        amountOutMinimum: 0
                     })
                 );
             } else {
@@ -332,6 +331,9 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
             "Under min redeem amount"
         );
 
+        if (totalRedeemAmount < minRedeemAmount) {
+            revert OverSlippage();
+        }
         emit RedeemedToToken(srcToken, to, redeemAmount, totalRedeemAmount);
     }
 
