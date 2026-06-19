@@ -237,7 +237,7 @@ contract ETFTradingTest is Test {
     }
 
     function testInvestWithToken() public {
-        uint256 etfShareMultiplier = 100; // User will mint 100 ETF shares (ensure enough balance for swap)
+        uint256 etfShareMultiplier = 10; // User will mint 10 ETF shares (ensure enough balance for swap)
         mintTokensToUser(userAddress, etfShareMultiplier);
         approveTokensForETFTrading(userAddress, etfShareMultiplier);
 
