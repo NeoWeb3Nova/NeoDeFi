@@ -112,6 +112,34 @@ contract ETFTradingTest is Test {
         );
 
         console.log("User approved ETFTrading to spend their tokens");
+        console.log(
+            "Approved NBTC: ",
+            FormatUtils.formatTokenAmount(
+                (NBTC_PER_SHARE * _etfShareMultiplier),
+                NBTC_DECIMALS
+            )
+        );
+        console.log(
+            "Approved NETH: ",
+            FormatUtils.formatTokenAmount(
+                (NETH_PER_SHARE * _etfShareMultiplier),
+                NETH_DECIMALS
+            )
+        );
+        console.log(
+            "Approved LINK: ",
+            FormatUtils.formatTokenAmount(
+                (LINK_PER_SHARE * _etfShareMultiplier),
+                LINK_DECIMALS
+            )
+        );
+        console.log(
+            "Approved USDC: ",
+            FormatUtils.formatTokenAmount(
+                (USDC_PER_SHARE * _etfShareMultiplier),
+                USDC_DECIMALS
+            )
+        );
     }
 
     function setUp() public {
@@ -211,13 +239,13 @@ contract ETFTradingTest is Test {
         mintTokensToUser(userAddress, etfShareMultiplier);
         approveTokensForETFTrading(userAddress, etfShareMultiplier);
 
-        uint256 mintAmount = etfShareMultiplier * 10 ** 18; // 10 ETF shares
+        uint256 mintAmount = 3 * 10 ** 18; // 3 ETF shares
         (uint256 investAmount, bytes[] memory swapPath) = etfQuoter
             .quoteInvestWithToken(address(etfTrading), NBTC_TOKEN, mintAmount);
 
         console.log(
             "Estimated NBTC amount needed for investing in %d ETF:",
-            etfShareMultiplier,
+            mintAmount / (10 ** 18),
             FormatUtils.formatTokenAmount(investAmount, NBTC_DECIMALS)
         );
 
