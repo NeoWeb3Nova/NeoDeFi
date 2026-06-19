@@ -133,6 +133,7 @@ contract ETFTradingTest is Test {
         tokenAmounts[2] = LINK_PER_SHARE;
         tokenAmounts[3] = USDC_PER_SHARE;
 
+        vm.startPrank(deployerAddress);
         etfTrading = new ETFTrading(
             ETF_NAME,
             ETF_SYMBOL,
@@ -141,7 +142,121 @@ contract ETFTradingTest is Test {
             MIN_MINT_AMOUNT,
             UNISWAP_V3_SWAP_ROUTER
         );
+
+        etfTrading.setFee(feeCollectorAddress, 100, 3000);
+
+        etfQuoter = new ETFQuoter(ETF_QUOTER);
+
+        vm.stopPrank();
+
         console.log("Deployer address:", deployerAddress);
         console.log("ETFTrading deployed at:", address(etfTrading));
+    }
+
+    function testETFMetadata() public view {
+        assertEq(etfTrading.name(), ETF_NAME, "ETF name does not match");
+        assertEq(etfTrading.symbol(), ETF_SYMBOL, "ETF symbol does not match");
+        assertEq(etfTrading.decimals(), 18, "ETF decimals do not match");
+
+        console.log("ETF name:", etfTrading.name());
+        console.log("ETF symbol:", etfTrading.symbol());
+        console.log("ETF decimals:", etfTrading.decimals());
+    }
+
+    function testETFTokens() public view {
+        address[] memory tokens = etfTrading.getTokens();
+
+        assertEq(tokens.length, 4, "ETF should have 4 tokens");
+
+        console.log("ETF Tokens:");
+        for (uint256 i = 0; i < tokens.length; i++) {
+            console.log("Token %d:", i, ERC20(tokens[i]).symbol());
+        }
+    }
+
+    function testInvestTokenAmounts() public view {
+        uint256 testMintAmount = 1 * 10 ** 18; // 1 ETF share
+        uint256[] memory amounts = etfTrading.getInvestTokenAmount(
+            testMintAmount
+        );
+
+        assertEq(amounts.length, 4, "Should return 4 token amounts");
+
+        assertEq(amounts[0], NBTC_PER_SHARE, "NBTC amount does not match");
+        assertEq(amounts[1], NETH_PER_SHARE, "NETH amount does not match");
+        assertEq(amounts[2], LINK_PER_SHARE, "LINK amount does not match");
+        assertEq(amounts[3], USDC_PER_SHARE, "USDC amount does not match");
+
+        console.log("Invest token amounts per share:");
+        console.log(
+            "NBTC: ",
+            FormatUtils.formatTokenAmount(amounts[0], NBTC_DECIMALS)
+        );
+        console.log(
+            "NETH: ",
+            FormatUtils.formatTokenAmount(amounts[1], NETH_DECIMALS)
+        );
+        console.log(
+            "LINK: ",
+            FormatUtils.formatTokenAmount(amounts[2], LINK_DECIMALS)
+        );
+        console.log(
+            "USDC: ",
+            FormatUtils.formatTokenAmount(amounts[3], USDC_DECIMALS)
+        );
+    }
+
+    function testInvestWithToken() public {
+        uint256 etfShareMultiplier = 10; // User will mint 10 ETF shares
+        mintTokensToUser(userAddress, etfShareMultiplier);
+        approveTokensForETFTrading(userAddress, etfShareMultiplier);
+
+        uint256 mintAmount = etfShareMultiplier * 10 ** 18; // 10 ETF shares
+        (uint256 investAmount, bytes[] memory swapPath) = etfQuoter
+            .quoteInvestWithToken(address(etfTrading), NBTC_TOKEN, mintAmount);
+
+        console.log(
+            "Estimated NBTC amount needed for investing in %d ETF:",
+            etfShareMultiplier,
+            FormatUtils.formatTokenAmount(investAmount, NBTC_DECIMALS)
+        );
+
+        uint256 maxInvestAmount = investAmount * 2;
+
+        vm.prank(userAddress);
+        etfTrading.investWithToken(
+            NBTC_TOKEN,
+            userAddress,
+            mintAmount,
+            maxInvestAmount,
+            swapPath
+        );
+        vm.stopPrank();
+
+        uint256 userEtfBalance = etfTrading.balanceOf(userAddress);
+        uint256 expectedEtfBalance = mintAmount -
+            (mintAmount * 1000) /
+            10000000; // Deducting 0.01% invest fee
+        assertEq(
+            userEtfBalance,
+            expectedEtfBalance,
+            "User ETF balance should match the minted amount"
+        );
+
+        console.log(
+            "User invested %d and received %d ETF shares:",
+            userEtfBalance,
+            expectedEtfBalance
+        );
+
+        uint256 feeCollectorEtfBalance = etfTrading.balanceOf(
+            feeCollectorAddress
+        );
+        uint256 expectedFeeCollectorBalance = (mintAmount * 1000) / 10000000; // 0.01% invest fee
+        assertEq(
+            feeCollectorEtfBalance,
+            expectedFeeCollectorBalance,
+            "Fee collector ETF balance should match the invest fee"
+        );
     }
 }
