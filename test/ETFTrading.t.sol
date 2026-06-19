@@ -14,6 +14,8 @@ contract ETFTradingTest is Test {
         0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E;
     address public constant ETF_QUOTER =
         0xaf0E0FC2F514b0A756377805f94E7B1d7DA70A50;
+    address public constant UNISWAP_V3_QUOTER =
+        0x43C4147CbaF8eeA99A79F3040E01CC5e6830Cc19;
 
     address public constant NBTC_TOKEN =
         0xB02956728Ef9B72AdB805a5507024216dD8F0Cba;
@@ -173,7 +175,7 @@ contract ETFTradingTest is Test {
 
         etfTrading.setFee(feeCollectorAddress, 100, 3000);
 
-        etfQuoter = new ETFQuoter(ETF_QUOTER);
+        etfQuoter = new ETFQuoter(UNISWAP_V3_QUOTER);
 
         vm.stopPrank();
 
@@ -235,7 +237,7 @@ contract ETFTradingTest is Test {
     }
 
     function testInvestWithToken() public {
-        uint256 etfShareMultiplier = 10; // User will mint 10 ETF shares
+        uint256 etfShareMultiplier = 100; // User will mint 100 ETF shares (ensure enough balance for swap)
         mintTokensToUser(userAddress, etfShareMultiplier);
         approveTokensForETFTrading(userAddress, etfShareMultiplier);
 
@@ -249,7 +251,7 @@ contract ETFTradingTest is Test {
             FormatUtils.formatTokenAmount(investAmount, NBTC_DECIMALS)
         );
 
-        uint256 maxInvestAmount = investAmount * 2;
+        uint256 maxInvestAmount = investAmount * 12 / 10; // 20% slippage tolerance
 
         vm.prank(userAddress);
         etfTrading.investWithToken(
