@@ -31,6 +31,7 @@ contract ETFTradingTest is Test {
     uint8 public constant NETH_DECIMALS = 18;
     uint8 public constant LINK_DECIMALS = 18;
     uint8 public constant USDC_DECIMALS = 6;
+    uint8 public constant ETF_DECIMALS = 18;
 
     uint256 public constant NBTC_PER_SHARE = 0.00555869 * 10 ** 8; // 0.00555869 NBTC (~$355.20, 40%)
     uint256 public constant NETH_PER_SHARE = 0.15310345 * 10 ** 18; // 0.15310345 NETH (~$266.40, 30%)
@@ -251,7 +252,7 @@ contract ETFTradingTest is Test {
             FormatUtils.formatTokenAmount(investAmount, NBTC_DECIMALS)
         );
 
-        uint256 maxInvestAmount = investAmount * 12 / 10; // 20% slippage tolerance
+        uint256 maxInvestAmount = (investAmount * 12) / 10; // 20% slippage tolerance
 
         vm.prank(userAddress);
         etfTrading.investWithToken(
@@ -287,6 +288,94 @@ contract ETFTradingTest is Test {
             feeCollectorEtfBalance,
             expectedFeeCollectorBalance,
             "Fee collector ETF balance should match the invest fee"
+        );
+    }
+
+    function testRedeemToToken() public {
+        testInvestWithToken(); // Ensure the user has ETF shares to redeem
+
+        uint256 userEtfBalanceBeforeRedeem = etfTrading.balanceOf(userAddress);
+        console.log(
+            "User ETF balance before redeeming:",
+            FormatUtils.formatTokenAmount(
+                userEtfBalanceBeforeRedeem,
+                ETF_DECIMALS
+            )
+        );
+
+        (uint256 redeemAmountOut, bytes[] memory redeemSwapPath) = etfQuoter
+            .quoteRedeemToToken(
+                address(etfTrading),
+                NBTC_TOKEN,
+                userEtfBalanceBeforeRedeem
+            );
+
+        console.log(
+            "Estimated NBTC amount received for redeeming %s ETF:",
+            FormatUtils.formatTokenAmount(
+                userEtfBalanceBeforeRedeem,
+                ETF_DECIMALS
+            ),
+            FormatUtils.formatTokenAmount(redeemAmountOut, NBTC_DECIMALS)
+        );
+
+        uint256 userNBTCBalanceBeforeRedeem = ERC20(NBTC_TOKEN).balanceOf(
+            userAddress
+        );
+        console.log(
+            "User NBTC balance before redeeming:",
+            FormatUtils.formatTokenAmount(
+                userNBTCBalanceBeforeRedeem,
+                NBTC_DECIMALS
+            )
+        );
+
+        uint256 minRedeemAmount = (redeemAmountOut * 95) / 100; // 5% slippage tolerance
+        vm.startPrank(userAddress);
+        etfTrading.redeemToToken(
+            NBTC_TOKEN,
+            userAddress,
+            userEtfBalanceBeforeRedeem,
+            minRedeemAmount,
+            redeemSwapPath
+        );
+        vm.stopPrank();
+
+        uint256 userEtfBalanceAfterRedeem = etfTrading.balanceOf(userAddress);
+        console.log(
+            "User ETF balance after redeeming:",
+            FormatUtils.formatTokenAmount(
+                userEtfBalanceAfterRedeem,
+                ETF_DECIMALS
+            )
+        );
+        uint256 userNBTCBalanceAfterRedeem = ERC20(NBTC_TOKEN).balanceOf(
+            userAddress
+        );
+        console.log(
+            "User NBTC balance after redeeming:",
+            FormatUtils.formatTokenAmount(
+                userNBTCBalanceAfterRedeem,
+                NBTC_DECIMALS
+            )
+        );
+
+        assertEq(
+            userEtfBalanceAfterRedeem,
+            0,
+            "User ETF balance should be zero after redeeming all shares"
+        );
+
+        assertTrue(
+            userNBTCBalanceAfterRedeem >= minRedeemAmount,
+            "User NBTC balance after redeeming should be greater than or equal to the minimum redeem amount"
+        );
+
+        uint256 ReceivedNBTC = userNBTCBalanceAfterRedeem -
+            userNBTCBalanceBeforeRedeem;
+        console.log(
+            "NBTC received from redeeming:",
+            FormatUtils.formatTokenAmount(ReceivedNBTC, NBTC_DECIMALS)
         );
     }
 }
