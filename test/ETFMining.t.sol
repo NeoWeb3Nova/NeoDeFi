@@ -83,6 +83,7 @@ contract ETFMiningTest is Test {
     function testUnstake() public {
         uint256 alphaStakeAmount = 50 * 1e18; // Alpha stakes 50 mETF
         uint256 alphaUnstakeAmount = 20 * 1e18; // Alpha unstakes 20 mETF
+        uint256 alphaEtfBalanceBefore = etfToken.balanceOf(alpha);
 
         vm.startPrank(alpha);
         etfMining.stake(alphaStakeAmount);
@@ -99,7 +100,7 @@ contract ETFMiningTest is Test {
         );
         assertEq(
             etfToken.balanceOf(alpha),
-            alphaStakeAmount - alphaUnstakeAmount,
+            alphaEtfBalanceBefore - alphaStakeAmount + alphaUnstakeAmount,
             "Alpha's remaining ETF balance should be 70 mETF"
         );
     }
@@ -194,6 +195,7 @@ contract ETFMiningTest is Test {
         uint256 alphaStakeAmount1 = 30 * 1e18; // Alpha stakes 30 mETF
         uint256 alphaStakeAmount2 = 20 * 1e18; // Alpha stakes another 20 mETF
         uint256 alphaUnstakeAmount = 10 * 1e18; // Alpha unstakes 10 mETF
+        uint256 alphaEtfBalanceBefore = etfToken.balanceOf(alpha);
 
         vm.startPrank(alpha);
         etfMining.stake(alphaStakeAmount1);
@@ -213,7 +215,7 @@ contract ETFMiningTest is Test {
         );
         assertEq(
             etfToken.balanceOf(alpha),
-            alphaStakeAmount1 + alphaStakeAmount2 - (alphaStakeAmount1 + alphaStakeAmount2 - alphaUnstakeAmount),
+            alphaEtfBalanceBefore - alphaStakeAmount1 - alphaStakeAmount2 + alphaUnstakeAmount,
             "Alpha's remaining ETF balance should be 60 mETF"
         );
     }
