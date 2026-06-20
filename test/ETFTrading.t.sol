@@ -374,11 +374,18 @@ contract ETFTradingTest is Test {
             "User NBTC balance after redeeming should be greater than or equal to the minimum redeem amount"
         );
 
-        uint256 ReceivedNBTC = userNBTCBalanceAfterRedeem -
+        uint256 receivedNBTCAmount = userNBTCBalanceAfterRedeem -
             userNBTCBalanceBeforeRedeem;
         console.log(
-            "NBTC received from redeeming:",
-            FormatUtils.formatTokenAmount(ReceivedNBTC, NBTC_DECIMALS)
+            "NBTC received from redeeming: %s , Expected (quoted) NBTC: %s",
+            FormatUtils.formatTokenAmount(receivedNBTCAmount, NBTC_DECIMALS),
+            FormatUtils.formatTokenAmount(redeemAmountOut, NBTC_DECIMALS)
+        );
+        assertApproxEqRel(
+            receivedNBTCAmount,
+            redeemAmountOut,
+            0.01 * 10 ** 18, // 1% tolerance
+            "Received NBTC amount should be approximately equal to the quoted amount"
         );
     }
 }
