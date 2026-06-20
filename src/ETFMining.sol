@@ -31,7 +31,7 @@ contract ETFMining is IETFMining {
         lastIndexUpdateTime = block.timestamp;
     }
 
-    function updateMingSpeedPerSecond(uint256 _miningSpeedPerSecond) external {
+    function updateMiningSpeedPerSecond(uint256 _miningSpeedPerSecond) external {
         _updateMiningIndex();
         miningSpeedPerSecond = _miningSpeedPerSecond;
     }
