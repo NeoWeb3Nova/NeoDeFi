@@ -132,6 +132,7 @@ contract ETFMining is IETFMining {
 
         // 计算最新的全局指数
         uint256 globalLastIndex = miningLastIndex;
+        // forge-lint: disable-next-line(block-timestamp)
         if (totalStackedBalance > 0 && block.timestamp > lastIndexUpdateTime && miningSpeedPerSecond > 0) {
             uint256 deltaTime = block.timestamp - lastIndexUpdateTime;
             uint256 deltaReward = miningSpeedPerSecond * deltaTime;
