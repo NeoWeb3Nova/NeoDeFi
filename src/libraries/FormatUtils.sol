@@ -11,10 +11,7 @@ library FormatUtils {
     /// @dev 例：formatTokenAmount(1234560000, 6) => "1234.56"
     ///      formatTokenAmount(5, 6)               => "0.000005"
     ///      formatTokenAmount(100_000000, 6)       => "100"（整数不带小数点）
-    function formatTokenAmount(
-        uint256 amount,
-        uint8 decimals
-    ) internal pure returns (string memory) {
+    function formatTokenAmount(uint256 amount, uint8 decimals) internal pure returns (string memory) {
         if (decimals == 0) {
             return amount.toString();
         }

@@ -2,10 +2,7 @@
 pragma solidity ^0.8.20;
 
 interface IUniswapV3Quoter {
-    function quoteExactInput(
-        bytes memory path,
-        uint256 amountIn
-    )
+    function quoteExactInput(bytes memory path, uint256 amountIn)
         external
         view
         returns (
@@ -15,10 +12,7 @@ interface IUniswapV3Quoter {
             uint256 gasEstimate
         );
 
-    function quoteExactOutput(
-        bytes memory path,
-        uint256 amountOut
-    )
+    function quoteExactOutput(bytes memory path, uint256 amountOut)
         external
         view
         returns (

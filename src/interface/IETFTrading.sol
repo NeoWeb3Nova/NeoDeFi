@@ -15,33 +15,15 @@ interface IETFTrading {
     error InvalidFeeTo();
     error FeeTooHigh();
 
-    event InvestedWithToken(
-        address indexed srcToken,
-        address indexed to,
-        uint256 mintAmount,
-        uint256 investAmount
-    );
+    event InvestedWithToken(address indexed srcToken, address indexed to, uint256 mintAmount, uint256 investAmount);
 
-    event RedeemedToToken(
-        address indexed srcToken,
-        address indexed to,
-        uint256 redeemAmount,
-        uint256 redeemAmountOut
-    );
+    event RedeemedToToken(address indexed srcToken, address indexed to, uint256 redeemAmount, uint256 redeemAmountOut);
 
-    function setFee(
-        address feeTo,
-        uint256 investFee,
-        uint256 redeemFee
-    ) external;
+    function setFee(address feeTo, uint256 investFee, uint256 redeemFee) external;
 
-    function getInvestTokenAmount(
-        uint256 mintAmount
-    ) external view returns (uint256[] memory tokenAmounts);
+    function getInvestTokenAmount(uint256 mintAmount) external view returns (uint256[] memory tokenAmounts);
 
-    function getRedeemTokenAmount(
-        uint256 redeemAmount
-    ) external view returns (uint256[] memory tokenAmounts);
+    function getRedeemTokenAmount(uint256 redeemAmount) external view returns (uint256[] memory tokenAmounts);
 
     function investWithToken(
         address srcToken,

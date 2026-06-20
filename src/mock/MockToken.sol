@@ -9,10 +9,7 @@ import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC2
 contract MockToken is ERC20, ERC20Burnable, Ownable {
     uint8 private immutable decimalsValue;
 
-    constructor(string memory _name, string memory _symbol, uint8 _decimals)
-        ERC20(_name, _symbol)
-        Ownable(msg.sender)
-    {
+    constructor(string memory _name, string memory _symbol, uint8 _decimals) ERC20(_name, _symbol) Ownable(msg.sender) {
         decimalsValue = _decimals;
     }
 

@@ -11,17 +11,12 @@ import {FormatUtils} from "../src/libraries/FormatUtils.sol";
 contract ETFQuoterTest is Test {
     using Strings for uint256;
 
-    address public constant UNISWAP_V3_QUOTER =
-        0x43C4147CbaF8eeA99A79F3040E01CC5e6830Cc19;
+    address public constant UNISWAP_V3_QUOTER = 0x43C4147CbaF8eeA99A79F3040E01CC5e6830Cc19;
 
-    address public constant NBTC_TOKEN =
-        0xB02956728Ef9B72AdB805a5507024216dD8F0Cba;
-    address public constant NETH_TOKEN =
-        0x027f8455B1a6df72a49B8364BABaEbf8F38D20Bf;
-    address public constant LINK_TOKEN =
-        0x028268f8fF62edc596f931E17E2Fb21015f5b0A2;
-    address public constant USDC_TOKEN =
-        0x45D2b305d3e2C91b0685A3E7c83bF6D201B88aA2;
+    address public constant NBTC_TOKEN = 0xB02956728Ef9B72AdB805a5507024216dD8F0Cba;
+    address public constant NETH_TOKEN = 0x027f8455B1a6df72a49B8364BABaEbf8F38D20Bf;
+    address public constant LINK_TOKEN = 0x028268f8fF62edc596f931E17E2Fb21015f5b0A2;
+    address public constant USDC_TOKEN = 0x45D2b305d3e2C91b0685A3E7c83bF6D201B88aA2;
 
     ETFQuoter public etfQuoter;
 
@@ -63,20 +58,11 @@ contract ETFQuoterTest is Test {
     function testQuoteExactOut() public view {
         uint256 amountOut = 1 * 10 ** USDC_DECIMALS; // 1 USDC
 
-        console.log(
-            "Quoting exact output: %s USDC -> NBTC",
-            FormatUtils.formatTokenAmount(amountOut, USDC_DECIMALS)
-        );
+        console.log("Quoting exact output: %s USDC -> NBTC", FormatUtils.formatTokenAmount(amountOut, USDC_DECIMALS));
 
-        try etfQuoter.quoteExactOut(NBTC_TOKEN, USDC_TOKEN, amountOut) returns (
-            bytes memory path,
-            uint256 amountIn
-        ) {
+        try etfQuoter.quoteExactOut(NBTC_TOKEN, USDC_TOKEN, amountOut) returns (bytes memory path, uint256 amountIn) {
             console.log("Path:", vm.toString(path));
-            console.log(
-                "NBTC AmountIn:",
-                FormatUtils.formatTokenAmount(amountIn, NBTC_DECIMALS)
-            );
+            console.log("NBTC AmountIn:", FormatUtils.formatTokenAmount(amountIn, NBTC_DECIMALS));
         } catch (bytes memory reason) {
             console.log("quoteExactOut failed with reason:", string(reason));
         }
@@ -85,20 +71,11 @@ contract ETFQuoterTest is Test {
     function testQuoteExactIn() public view {
         uint256 amountIn = 1 * 10 ** NBTC_DECIMALS; // 1 NBTC
 
-        console.log(
-            "Quoting exact input: %s NBTC -> USDC",
-            FormatUtils.formatTokenAmount(amountIn, NBTC_DECIMALS)
-        );
+        console.log("Quoting exact input: %s NBTC -> USDC", FormatUtils.formatTokenAmount(amountIn, NBTC_DECIMALS));
 
-        try etfQuoter.quoteExactIn(NBTC_TOKEN, USDC_TOKEN, amountIn) returns (
-            bytes memory path,
-            uint256 amountOut
-        ) {
+        try etfQuoter.quoteExactIn(NBTC_TOKEN, USDC_TOKEN, amountIn) returns (bytes memory path, uint256 amountOut) {
             console.log("Path:", vm.toString(path));
-            console.log(
-                "USDC AmountOut:",
-                FormatUtils.formatTokenAmount(amountOut, USDC_DECIMALS)
-            );
+            console.log("USDC AmountOut:", FormatUtils.formatTokenAmount(amountOut, USDC_DECIMALS));
         } catch (bytes memory reason) {
             console.log("quoteExactIn failed with reason:", string(reason));
         }

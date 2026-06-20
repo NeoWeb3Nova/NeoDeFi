@@ -25,32 +25,16 @@ contract DeployETFTokens is Script {
         console.log("Deployer address:", deployerAddress);
 
         vm.startBroadcast(deployerPrivateKey);
-        MockToken nbtcToken = new MockToken(
-            "Mock Token 1",
-            "NBTC",
-            NBTC_DECIMALS
-        );
+        MockToken nbtcToken = new MockToken("Mock Token 1", "NBTC", NBTC_DECIMALS);
         nbtcAddress = address(nbtcToken);
         console.log("NBTC Token deployed at:", nbtcAddress);
-        MockToken nethToken = new MockToken(
-            "Mock Token 2",
-            "NETH",
-            NETH_DECIMALS
-        );
+        MockToken nethToken = new MockToken("Mock Token 2", "NETH", NETH_DECIMALS);
         nethAddress = address(nethToken);
         console.log("NETH Token deployed at:", nethAddress);
-        MockToken linkToken = new MockToken(
-            "Mock Token 3",
-            "LINK",
-            LINK_DECIMALS
-        );
+        MockToken linkToken = new MockToken("Mock Token 3", "LINK", LINK_DECIMALS);
         linkAddress = address(linkToken);
         console.log("LINK Token deployed at:", linkAddress);
-        MockToken usdcToken = new MockToken(
-            "Mock Token 4",
-            "USDC",
-            USDC_DECIMALS
-        );
+        MockToken usdcToken = new MockToken("Mock Token 4", "USDC", USDC_DECIMALS);
         usdcAddress = address(usdcToken);
         console.log("USDC Token deployed at:", usdcAddress);
 

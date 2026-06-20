@@ -42,10 +42,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         address swapRouter_
     ) ERC20(name_, symbol_) Ownable(msg.sender) {
         require(ETFWithTokens_.length > 0, "No tokens provided");
-        require(
-            ETFWithTokens_.length == weights_.length,
-            "Invalid array length"
-        );
+        require(ETFWithTokens_.length == weights_.length, "Invalid array length");
         require(minMintAmount_ > 0, "Invalid minimum mint amount");
         require(swapRouter_ != address(0), "Invalid swap router");
 
@@ -63,11 +60,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         }
     }
 
-    function setFee(
-        address _feeTo,
-        uint256 _investFee,
-        uint256 _redeemFee
-    ) external override onlyOwner {
+    function setFee(address _feeTo, uint256 _investFee, uint256 _redeemFee) external override onlyOwner {
         if (_feeTo == address(0)) {
             revert InvalidFeeTo();
         }
@@ -80,9 +73,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         redeemFee = _redeemFee;
     }
 
-    function getInvestTokenAmount(
-        uint256 mintAmount
-    ) external view override returns (uint256[] memory tokenAmounts) {
+    function getInvestTokenAmount(uint256 mintAmount) external view override returns (uint256[] memory tokenAmounts) {
         // Implementation here
 
         uint256 _totalSupply = totalSupply();
@@ -90,68 +81,33 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
 
         for (uint256 i = 0; i < ETFWithTokens.length; i++) {
             if (_totalSupply == 0) {
-                tokenAmounts[i] = Math.mulDiv(
-                    mintAmount,
-                    weights[i],
-                    1e18,
-                    Math.Rounding.Ceil
-                );
+                tokenAmounts[i] = Math.mulDiv(mintAmount, weights[i], 1e18, Math.Rounding.Ceil);
             } else {
-                uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(
-                    address(this)
-                );
-                tokenAmounts[i] = Math.mulDiv(
-                    tokenBalance,
-                    mintAmount,
-                    _totalSupply,
-                    Math.Rounding.Ceil
-                );
+                uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(address(this));
+                tokenAmounts[i] = Math.mulDiv(tokenBalance, mintAmount, _totalSupply, Math.Rounding.Ceil);
             }
         }
     }
 
-    function getRedeemTokenAmount(
-        uint256 redeemAmount
-    ) external view override returns (uint256[] memory tokenAmounts) {
+    function getRedeemTokenAmount(uint256 redeemAmount) external view override returns (uint256[] memory tokenAmounts) {
         uint256 _totalSupply = totalSupply();
         tokenAmounts = new uint256[](ETFWithTokens.length);
 
         if (redeemFee > 0) {
-            redeemAmount = Math.mulDiv(
-                redeemAmount,
-                HUNDRED_PERCENT - redeemFee,
-                HUNDRED_PERCENT,
-                Math.Rounding.Floor
-            );
+            redeemAmount = Math.mulDiv(redeemAmount, HUNDRED_PERCENT - redeemFee, HUNDRED_PERCENT, Math.Rounding.Floor);
         }
 
         for (uint256 i = 0; i < ETFWithTokens.length; i++) {
-            uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(
-                address(this)
-            );
-            tokenAmounts[i] = Math.mulDiv(
-                tokenBalance,
-                redeemAmount,
-                _totalSupply,
-                Math.Rounding.Floor
-            );
+            uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(address(this));
+            tokenAmounts[i] = Math.mulDiv(tokenBalance, redeemAmount, _totalSupply, Math.Rounding.Floor);
         }
     }
 
-    function _checkSwapPath(
-        address targetToken,
-        address srcToken,
-        bytes memory swapPath
-    ) internal pure returns (bool) {
-        (address firstToken, address secondToken, ) = swapPath
-            .decodeFirstPool();
+    function _checkSwapPath(address targetToken, address srcToken, bytes memory swapPath) internal pure returns (bool) {
+        (address firstToken, address secondToken,) = swapPath.decodeFirstPool();
 
         if (targetToken == srcToken) {
-            if (
-                firstToken == targetToken &&
-                secondToken == targetToken &&
-                !swapPath.hasMultiplePools()
-            ) {
+            if (firstToken == targetToken && secondToken == targetToken && !swapPath.hasMultiplePools()) {
                 return true;
             } else {
                 return false;
@@ -164,7 +120,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
                 swapPath = swapPath.skipToken();
             }
 
-            (, secondToken, ) = swapPath.decodeFirstPool();
+            (, secondToken,) = swapPath.decodeFirstPool();
             if (secondToken != srcToken) {
                 return false;
             }
@@ -178,12 +134,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         }
 
         if (investFee > 0) {
-            uint256 feeAmount = Math.mulDiv(
-                mintAmount,
-                investFee,
-                HUNDRED_PERCENT,
-                Math.Rounding.Floor
-            );
+            uint256 feeAmount = Math.mulDiv(mintAmount, investFee, HUNDRED_PERCENT, Math.Rounding.Floor);
             mintAmount -= feeAmount;
             if (feeAmount > 0) {
                 _mint(feeTo, feeAmount);
@@ -208,11 +159,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
 
         uint256[] memory tokenAmounts = this.getInvestTokenAmount(mintAmount);
 
-        IERC20(srcToken).safeTransferFrom(
-            msg.sender,
-            address(this),
-            maxInvestAmount
-        );
+        IERC20(srcToken).safeTransferFrom(msg.sender, address(this), maxInvestAmount);
 
         IERC20(srcToken).forceApprove(swapRouter, maxInvestAmount);
 
@@ -229,14 +176,15 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
 
             if (tokens[i] != srcToken) {
                 //这里要把当前的代币换成目标代币，swapExactIn会返回实际投资的金额
-                totalInvestAmount += IETFSwapRouter(swapRouter).exactOutput(
-                    IETFSwapRouter.ExactOutputParams({
+                totalInvestAmount += IETFSwapRouter(swapRouter)
+                    .exactOutput(
+                        IETFSwapRouter.ExactOutputParams({
                         path: swapPaths[i],
                         recipient: address(this),
                         amountOut: tokenAmounts[i],
                         amountInMaximum: maxInvestAmount
                     })
-                );
+                    );
             } else {
                 totalInvestAmount += tokenAmounts[i];
             }
@@ -252,10 +200,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         emit InvestedWithToken(srcToken, to, mintAmount, totalInvestAmount);
     }
 
-    function _redeem(
-        address to,
-        uint256 redeemAmount
-    ) internal returns (uint256[] memory tokenAmounts) {
+    function _redeem(address to, uint256 redeemAmount) internal returns (uint256[] memory tokenAmounts) {
         uint256 _totalSupply = totalSupply();
         tokenAmounts = new uint256[](ETFWithTokens.length);
 
@@ -265,12 +210,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         _burn(msg.sender, redeemAmount);
 
         if (redeemFee > 0) {
-            uint256 feeAmount = Math.mulDiv(
-                redeemAmount,
-                redeemFee,
-                HUNDRED_PERCENT,
-                Math.Rounding.Floor
-            );
+            uint256 feeAmount = Math.mulDiv(redeemAmount, redeemFee, HUNDRED_PERCENT, Math.Rounding.Floor);
             redeemAmount -= feeAmount;
             if (feeAmount > 0) {
                 _mint(feeTo, feeAmount);
@@ -278,15 +218,8 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         }
 
         for (uint256 i = 0; i < ETFWithTokens.length; i++) {
-            uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(
-                address(this)
-            );
-            tokenAmounts[i] = Math.mulDiv(
-                tokenBalance,
-                redeemAmount,
-                _totalSupply,
-                Math.Rounding.Floor
-            );
+            uint256 tokenBalance = IERC20(ETFWithTokens[i]).balanceOf(address(this));
+            tokenAmounts[i] = Math.mulDiv(tokenBalance, redeemAmount, _totalSupply, Math.Rounding.Floor);
             if (tokenAmounts[i] > 0 && to != address(this)) {
                 IERC20(ETFWithTokens[i]).safeTransfer(to, tokenAmounts[i]);
             }
@@ -320,14 +253,12 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
 
             if (tokens[i] != srcToken) {
                 IERC20(tokens[i]).forceApprove(swapRouter, tokenAmounts[i]);
-                totalRedeemAmount += IETFSwapRouter(swapRouter).exactInput(
-                    IETFSwapRouter.ExactInputParams({
-                        path: swapPaths[i],
-                        recipient: to,
-                        amountIn: tokenAmounts[i],
-                        amountOutMinimum: 0
+                totalRedeemAmount += IETFSwapRouter(swapRouter)
+                    .exactInput(
+                        IETFSwapRouter.ExactInputParams({
+                        path: swapPaths[i], recipient: to, amountIn: tokenAmounts[i], amountOutMinimum: 0
                     })
-                );
+                    );
             } else {
                 IERC20(tokens[i]).safeTransfer(to, tokenAmounts[i]);
                 totalRedeemAmount += tokenAmounts[i];
@@ -340,12 +271,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         emit RedeemedToToken(srcToken, to, redeemAmount, totalRedeemAmount);
     }
 
-    function getTokens()
-        external
-        view
-        override
-        returns (address[] memory tokens)
-    {
+    function getTokens() external view override returns (address[] memory tokens) {
         tokens = new address[](ETFWithTokens.length);
         for (uint256 i = 0; i < ETFWithTokens.length; i++) {
             tokens[i] = ETFWithTokens[i];

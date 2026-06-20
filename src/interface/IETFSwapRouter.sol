@@ -4,17 +4,11 @@ pragma solidity ^0.8.20;
 import {IUniswapV3SwapCallback} from "@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol";
 
 interface IETFSwapRouter is IUniswapV3SwapCallback {
-    function exactInputSingle(
-        ExactInputSingleParams calldata params
-    ) external payable returns (uint256 amountOut);
+    function exactInputSingle(ExactInputSingleParams calldata params) external payable returns (uint256 amountOut);
 
-    function exactInput(
-        ExactInputParams calldata params
-    ) external payable returns (uint256 amountOut);
+    function exactInput(ExactInputParams calldata params) external payable returns (uint256 amountOut);
 
-    function exactOutput(
-        ExactOutputParams calldata params
-    ) external payable returns (uint256 amountIn);
+    function exactOutput(ExactOutputParams calldata params) external payable returns (uint256 amountIn);
 
     struct ExactInputSingleParams {
         address tokenIn;
