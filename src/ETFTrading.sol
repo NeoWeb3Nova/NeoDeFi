@@ -206,7 +206,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
             maxInvestAmount
         );
 
-        IERC20(srcToken).approve(swapRouter, maxInvestAmount);
+        IERC20(srcToken).forceApprove(swapRouter, maxInvestAmount);
 
         uint256 totalInvestAmount = 0;
 
@@ -311,7 +311,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
             }
 
             if (tokens[i] != srcToken) {
-                IERC20(tokens[i]).approve(swapRouter, tokenAmounts[i]);
+                IERC20(tokens[i]).forceApprove(swapRouter, tokenAmounts[i]);
                 totalRedeemAmount += IETFSwapRouter(swapRouter).exactInput(
                     IETFSwapRouter.ExactInputParams({
                         path: swapPaths[i],

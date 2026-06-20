@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {console} from "forge-std/console.sol";
 import {ETFQuoter} from "../src/ETFQuoter.sol";
 import {ETFTrading} from "../src/ETFTrading.sol";
@@ -10,6 +11,8 @@ import {FormatUtils} from "../src/libraries/FormatUtils.sol";
 
 contract ETFTradingTest is Test {
     using FormatUtils for uint256;
+    using SafeERC20 for ERC20;
+    
     address public constant UNISWAP_V3_SWAP_ROUTER =
         0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E;
     address public constant ETF_QUOTER =
@@ -94,22 +97,22 @@ contract ETFTradingTest is Test {
         uint256 _etfShareMultiplier
     ) internal {
         vm.prank(_userAddress);
-        ERC20(NBTC_TOKEN).approve(
+        ERC20(NBTC_TOKEN).forceApprove(
             address(etfTrading),
             NBTC_PER_SHARE * _etfShareMultiplier
         );
         vm.prank(_userAddress);
-        ERC20(NETH_TOKEN).approve(
+        ERC20(NETH_TOKEN).forceApprove(
             address(etfTrading),
             NETH_PER_SHARE * _etfShareMultiplier
         );
         vm.prank(_userAddress);
-        ERC20(LINK_TOKEN).approve(
+        ERC20(LINK_TOKEN).forceApprove(
             address(etfTrading),
             LINK_PER_SHARE * _etfShareMultiplier
         );
         vm.prank(_userAddress);
-        ERC20(USDC_TOKEN).approve(
+        ERC20(USDC_TOKEN).forceApprove(
             address(etfTrading),
             USDC_PER_SHARE * _etfShareMultiplier
         );
