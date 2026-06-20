@@ -45,20 +45,22 @@ contract DeployETFMining is Script {
 
         vm.stopBroadcast();
 
-        console.log("Deployment complete. Saving addresses to JSON...");
-        string memory json = string(
-            abi.encodePacked(
-                "{\n",
-                '  "rewardToken": "',
-                rewardTokenAddress.toHexString(),
-                '",\n',
-                '  "miningContract": "',
-                miningContractAddress.toHexString(),
-                '"\n      }'
-            )
-        );
-        string memory filePath = "./deployments/etfMiningDeployment.json";
-        json.write(filePath);
-        console.log("Addresses saved to:", filePath);
+        /*
+                console.log("Deployment complete. Saving addresses to JSON...");
+                string memory json = string(
+                    abi.encodePacked(
+                        "{\n",
+                        '  "rewardToken": "',
+                        rewardTokenAddress.toHexString(),
+                        '",\n',
+                        '  "miningContract": "',
+                        miningContractAddress.toHexString(),
+                        '"\n      }'
+                    )
+                );
+                string memory filePath = "./deployments/etfMiningDeployment.json";
+                json.write(filePath);
+                console.log("Addresses saved to:", filePath);
+        */
     }
 }
