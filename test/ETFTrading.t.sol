@@ -15,7 +15,7 @@ contract ETFTradingTest is Test {
     using SafeERC20 for ERC20;
 
     address public constant UNISWAP_V3_SWAP_ROUTER = 0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E;
-    address public constant ETF_QUOTER = 0xaf0E0FC2F514b0A756377805f94E7B1d7DA70A50;
+    address public constant ETF_QUOTER = 0x8114Ca0defe9313a74E41F4B1C24a49E00ebb7d5;
     address public constant UNISWAP_V3_QUOTER = 0x43C4147CbaF8eeA99A79F3040E01CC5e6830Cc19;
 
     address public constant NBTC_TOKEN = 0xB02956728Ef9B72AdB805a5507024216dD8F0Cba;

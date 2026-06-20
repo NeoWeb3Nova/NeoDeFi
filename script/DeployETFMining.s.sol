@@ -16,7 +16,7 @@ contract DeployETFTokens is Script {
     string rewardTokenName = "NeoETF Reward Token";
     string rewardTokenSymbol = "NRWD";
     uint256 initialMiningSpeedPerSecond = 1e16; // 每秒挖矿速度，单位为NRWD
-    address public constant ETF_TRADING_ADDRESS = 0xdfC341839D4d446c75999B089307f4a618261EE8; // 替换为实际的ETF交易合约地址
+    address public constant ETF_TRADING_ADDRESS = 0xA2286C2689d9aCd78dd482da0eb1680A668949B6; // 替换为实际的ETF交易合约地址 
 
     address public etfTradingAddress;
     address public rewardTokenAddress;
