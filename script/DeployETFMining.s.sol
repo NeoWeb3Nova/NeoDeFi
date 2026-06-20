@@ -8,7 +8,10 @@ import {ETFMining} from "../src/ETFMining.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract DeployETFTokens is Script {
+// Deploy script:
+// forge script script/DeployETFMining.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vv
+
+contract DeployETFMining is Script {
     using stdJson for string;
     using Strings for address;
     using SafeERC20 for MockToken;
@@ -16,14 +19,14 @@ contract DeployETFTokens is Script {
     string rewardTokenName = "NeoETF Reward Token";
     string rewardTokenSymbol = "NRWD";
     uint256 initialMiningSpeedPerSecond = 1e16; // 每秒挖矿速度，单位为NRWD
-    address public constant ETF_TRADING_ADDRESS = 0xA2286C2689d9aCd78dd482da0eb1680A668949B6; // 替换为实际的ETF交易合约地址 
+    address public constant ETF_TRADING_ADDRESS = 0xA2286C2689d9aCd78dd482da0eb1680A668949B6; // 替换为实际的ETF交易合约地址
 
     address public etfTradingAddress;
     address public rewardTokenAddress;
     address public miningContractAddress;
 
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployerAddress = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
         console.log("Deployer Address:", deployerAddress);
