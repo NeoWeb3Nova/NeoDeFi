@@ -146,8 +146,10 @@ contract ETFMiningTest is Test {
         etfMining.claimMiningReward();
         vm.stopPrank();
 
-        uint256 expectedRewardAlpha = (MINING_SPEED_PER_SECOND * 100 * alphaStakeAmount) / (alphaStakeAmount + betaStakeAmount); // Alpha should get half of the rewards
-        uint256 expectedRewardBeta = (MINING_SPEED_PER_SECOND * 100 * betaStakeAmount) / (alphaStakeAmount + betaStakeAmount); // Beta should get half of the rewards
+        uint256 expectedRewardAlpha =
+            (MINING_SPEED_PER_SECOND * 100 * alphaStakeAmount) / (alphaStakeAmount + betaStakeAmount); // Alpha should get half of the rewards
+        uint256 expectedRewardBeta =
+            (MINING_SPEED_PER_SECOND * 100 * betaStakeAmount) / (alphaStakeAmount + betaStakeAmount); // Beta should get half of the rewards
 
         assertEq(rewardToken.balanceOf(alpha), expectedRewardAlpha, "Alpha's mining reward should be correct");
         assertEq(rewardToken.balanceOf(beta), expectedRewardBeta, "Beta's mining reward should be correct");
