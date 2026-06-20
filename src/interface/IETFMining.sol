@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 interface IETFMining {
     error NothingToClaim();
-    event SupplierIndexUpdated(address indexed supplier, uint256 lastIndex);
+    event SupplierIndexUpdated(address indexed supplier, uint256 deltaIndex, uint256 lastIndex);
     event MiningRewardClaimed(address indexed supplier, uint256 amount);
     event Staked(address indexed supplier, uint256 amount);
     event Unstaked(address indexed supplier, uint256 amount);

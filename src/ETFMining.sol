@@ -31,6 +31,47 @@ contract ETFMining is IETFMining {
         lastIndexUpdateTime = block.timestamp;
     }
 
+    function updateMingSpeedPerSecond(uint256 _miningSpeedPerSecond) external {
+        _updateMiningIndex();
+        miningSpeedPerSecond = _miningSpeedPerSecond;
+    }
+
+    function _updateMiningIndex() internal {
+        if (miningLastIndex == 0) {
+            // 首次初始化
+            miningLastIndex = INDEX_SCALE;
+            lastIndexUpdateTime = block.timestamp;
+        } else {
+            uint256 deltaTime = block.timestamp - lastIndexUpdateTime;
+            if (totalStackedBalance > 0 && deltaTime > 0 && miningSpeedPerSecond > 0) {
+                // 计算时间段内应产生的总奖励
+                uint256 deltaReward = miningSpeedPerSecond * deltaTime;
+                // 将奖励转换为指数增量：deltaReward * INDEX_SCALE / totalStackedBalance
+                uint256 deltaIndex = deltaReward.mulDiv(INDEX_SCALE, totalStackedBalance);
+                miningLastIndex += deltaIndex;
+                lastIndexUpdateTime = block.timestamp;
+            } else if (deltaTime > 0) {
+                // 即使没有产生新的指数，也更新时间戳
+                lastIndexUpdateTime = block.timestamp;
+            }
+        }
+    }
+
+    function _updateSupplierIndex(address supplier) internal {
+        uint256 lastIndex = supplierLastIndex[supplier];
+        uint256 supply = supplierStackedBalance[supplier];
+        uint256 deltaIndex;
+        if (lastIndex > 0 && supply > 0) {
+            // 计算用户指数的增量
+            deltaIndex = miningLastIndex - lastIndex;
+            // 计算用户应得奖励：用户质押量 * 指数增量 / INDEX_SCALE
+            uint256 deltaReward = supply.mulDiv(deltaIndex, INDEX_SCALE);
+            supplierAccruedMining[supplier] += deltaReward;
+        }
+        supplierLastIndex[supplier] = miningLastIndex;
+        emit SupplierIndexUpdated(supplier, deltaIndex, miningLastIndex);
+    }
+
     function stake(uint256 amount) external {
         require(amount > 0, "Amount must be greater than zero");
 
@@ -49,47 +90,6 @@ contract ETFMining is IETFMining {
         IERC20(etfAddress).safeTransferFrom(msg.sender, address(this), amount);
 
         emit Staked(msg.sender, amount);
-    }
-
-    function _updateMiningIndex() internal {
-        if (miningLastIndex == 0) {
-            // 首次初始化
-            miningLastIndex = INDEX_SCALE;
-            lastIndexUpdateTime = block.timestamp;
-        } else {
-            uint256 deltaTime = block.timestamp - lastIndexUpdateTime;
-            if (totalStaked > 0 && deltaTime > 0 && miningSpeedPerSecond > 0) {
-                // 计算时间段内应产生的总奖励
-                uint256 deltaReward = miningSpeedPerSecond * deltaTime;
-                // 将奖励转换为指数增量：deltaReward * INDEX_SCALE / totalStaked
-                uint256 deltaIndex = deltaReward.mulDiv(INDEX_SCALE, totalStaked);
-                miningLastIndex += deltaIndex;
-                lastIndexUpdateTime = block.timestamp;
-            } else if (deltaTime > 0) {
-                // 即使没有产生新的指数，也更新时间戳
-                lastIndexUpdateTime = block.timestamp;
-            }
-        }
-    }
-
-    function updateMingSpeedPerSecond(uint256 _miningSpeedPerSecond) external {
-        _updateMiningIndex();
-        miningSpeedPerSecond = _miningSpeedPerSecond;
-    }
-
-    function _updateSupplierIndex(address supplier) internal {
-        uint256 lastIndex = supplierLastIndex[supplier];
-        uint256 supply = stakedBalances[supplier];
-        uint256 deltaIndex;
-        if (lastIndex > 0 && supply > 0) {
-            // 计算用户指数的增量
-            deltaIndex = miningLastIndex - lastIndex;
-            // 计算用户应得奖励：用户质押量 * 指数增量 / INDEX_SCALE
-            uint256 deltaReward = supply.mulDiv(deltaIndex, INDEX_SCALE);
-            supplierRewardAccrued[supplier] += deltaReward;
-        }
-        supplierLastIndex[supplier] = miningLastIndex;
-        emit SupplierIndexUpdated(supplier, deltaIndex, miningLastIndex);
     }
 
     function unstake(uint256 amount) external {
