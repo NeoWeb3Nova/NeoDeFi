@@ -28,7 +28,6 @@ contract DeployETFMining is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployerAddress = vm.addr(deployerPrivateKey);
-        vm.startBroadcast(deployerPrivateKey);
         console.log("Deployer Address:", deployerAddress);
 
         vm.startBroadcast(deployerPrivateKey);
