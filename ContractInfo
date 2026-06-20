@@ -19,3 +19,11 @@
 == Logs ==
   Deployer address: 0x650cd30a58e6893169F41CaC9379D02e7E34653F
   ETFQuoter deployed at: 0x8114Ca0defe9313a74E41F4B1C24a49E00ebb7d5
+
+
+// Deploy script:
+// forge script script/DeployETFMining.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vv
+== Logs ==
+  Deployer Address: 0x650cd30a58e6893169F41CaC9379D02e7E34653F
+  Reward Token deployed at: 0xEcc071221AcBdb49A21368345e4234EDf9046Ff8
+  Mining Contract deployed at: 0x67040374b8A9756586De0885f01d1291cE8FFCcF
