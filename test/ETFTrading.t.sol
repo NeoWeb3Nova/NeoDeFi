@@ -384,7 +384,7 @@ contract ETFTradingTest is Test {
         assertApproxEqRel(
             receivedNBTCAmount,
             redeemAmountOut,
-            0.01 * 10 ** 18, // 1% tolerance
+            1e16,// 0.01 * 10 ** 18 (1% tolerance)
             "Received NBTC amount should be approximately equal to the quoted amount"
         );
     }
