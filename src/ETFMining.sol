@@ -4,11 +4,11 @@ pragma solidity ^0.8.20;
 import {IETFMining} from "./interface/IETFMining.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-// import {FullMath} from "./libraries/FullMath.sol";
+import {FullMath} from "./libraries/FullMath.sol";
 
 contract ETFMining is IETFMining {
     using SafeERC20 for IERC20;
-    // using FullMath for uint256;
+    using FullMath for uint256;
 
     uint256 public constant INDEX_SCALE = 1e36;
 
@@ -23,11 +23,7 @@ contract ETFMining is IETFMining {
     mapping(address => uint256) public supplierStackedBalance;
     uint256 public totalStackedBalance;
 
-    constructor(
-        address _miningToken,
-        address _etfAddress,
-        uint256 _miningSpeedPerSecond
-    ) {
+    constructor(address _miningToken, address _etfAddress, uint256 _miningSpeedPerSecond) {
         miningToken = _miningToken;
         etfAddress = _etfAddress;
         miningSpeedPerSecond = _miningSpeedPerSecond;
@@ -37,9 +33,9 @@ contract ETFMining is IETFMining {
 
     function stake(uint256 amount) external {
         require(amount > 0, "Amount must be greater than zero");
-        _updateMiningIndex();
 
         // 更新用户的挖矿奖励
+        _updateMiningIndex();
         _updateSupplierIndex(msg.sender);
 
         // 更新用户的质押余额和总质押余额
@@ -56,42 +52,52 @@ contract ETFMining is IETFMining {
     }
 
     function _updateMiningIndex() internal {
-        uint256 timeElapsed = block.timestamp - lastIndexUpdateTime;
-        if (timeElapsed > 0 && totalStackedBalance > 0) {
-            uint256 miningReward = timeElapsed * miningSpeedPerSecond;
-            uint256 indexIncrement = (miningReward * INDEX_SCALE) /
-                totalStackedBalance;
-            miningLastIndex += indexIncrement;
+        if (miningLastIndex == 0) {
+            // 首次初始化
+            miningLastIndex = INDEX_SCALE;
             lastIndexUpdateTime = block.timestamp;
+        } else {
+            uint256 deltaTime = block.timestamp - lastIndexUpdateTime;
+            if (totalStaked > 0 && deltaTime > 0 && miningSpeedPerSecond > 0) {
+                // 计算时间段内应产生的总奖励
+                uint256 deltaReward = miningSpeedPerSecond * deltaTime;
+                // 将奖励转换为指数增量：deltaReward * INDEX_SCALE / totalStaked
+                uint256 deltaIndex = deltaReward.mulDiv(INDEX_SCALE, totalStaked);
+                miningLastIndex += deltaIndex;
+                lastIndexUpdateTime = block.timestamp;
+            } else if (deltaTime > 0) {
+                // 即使没有产生新的指数，也更新时间戳
+                lastIndexUpdateTime = block.timestamp;
+            }
         }
     }
 
     function updateMingSpeedPerSecond(uint256 _miningSpeedPerSecond) external {
+        _updateMiningIndex();
         miningSpeedPerSecond = _miningSpeedPerSecond;
     }
 
     function _updateSupplierIndex(address supplier) internal {
-        uint256 userIndex = supplierLastIndex[supplier];
-        if (userIndex > 0) {
-            uint256 pendingReward = (supplierStackedBalance[supplier] *
-                (miningLastIndex - userIndex)) / INDEX_SCALE;
-            supplierAccruedMining[supplier] += pendingReward;
+        uint256 lastIndex = supplierLastIndex[supplier];
+        uint256 supply = stakedBalances[supplier];
+        uint256 deltaIndex;
+        if (lastIndex > 0 && supply > 0) {
+            // 计算用户指数的增量
+            deltaIndex = miningLastIndex - lastIndex;
+            // 计算用户应得奖励：用户质押量 * 指数增量 / INDEX_SCALE
+            uint256 deltaReward = supply.mulDiv(deltaIndex, INDEX_SCALE);
+            supplierRewardAccrued[supplier] += deltaReward;
         }
         supplierLastIndex[supplier] = miningLastIndex;
-
-        emit SupplierIndexUpdated(supplier, supplierLastIndex[supplier]);
+        emit SupplierIndexUpdated(supplier, deltaIndex, miningLastIndex);
     }
-
 
     function unstake(uint256 amount) external {
         require(amount > 0, "Amount must be greater than zero");
-        require(
-            supplierStackedBalance[msg.sender] >= amount,
-            "Insufficient staked balance"
-        );
-        _updateMiningIndex();
+        require(supplierStackedBalance[msg.sender] >= amount, "Insufficient staked balance");
 
         // 更新用户的挖矿奖励
+        _updateMiningIndex();
         _updateSupplierIndex(msg.sender);
 
         // 更新用户的质押余额和总质押余额
@@ -105,9 +111,8 @@ contract ETFMining is IETFMining {
     }
 
     function claimMiningReward() external {
-        _updateMiningIndex();
-
         // 更新用户的挖矿奖励
+        _updateMiningIndex();
         _updateSupplierIndex(msg.sender);
 
         uint256 reward = supplierAccruedMining[msg.sender];
@@ -122,17 +127,28 @@ contract ETFMining is IETFMining {
         emit MiningRewardClaimed(msg.sender, reward);
     }
 
-    function getPendingMiningReward(address supplier)
-        external
-        view
-        returns (uint256)
-    {
-        uint256 userIndex = supplierLastIndex[supplier];
-        if (userIndex == 0) {
-            return supplierAccruedMining[supplier];
+    function getPendingMiningReward(address supplier) external view returns (uint256) {
+        uint256 claimable = supplierAccruedMining[supplier];
+
+        // 计算最新的全局指数
+        uint256 globalLastIndex = miningLastIndex;
+        if (totalStackedBalance > 0 && block.timestamp > lastIndexUpdateTime && miningSpeedPerSecond > 0) {
+            uint256 deltaTime = block.timestamp - lastIndexUpdateTime;
+            uint256 deltaReward = miningSpeedPerSecond * deltaTime;
+            uint256 deltaIndex = deltaReward.mulDiv(INDEX_SCALE, totalStackedBalance);
+            globalLastIndex += deltaIndex;
         }
-        uint256 pendingReward = (supplierStackedBalance[supplier] *
-            (miningLastIndex - userIndex)) / INDEX_SCALE;
-        return supplierAccruedMining[supplier] + pendingReward;
+
+        // 计算用户可累加的奖励
+        uint256 supplierIndex = supplierLastIndex[supplier];
+        uint256 supplierSupply = supplierStackedBalance[supplier];
+        uint256 supplierDeltaIndex;
+        if (supplierIndex > 0 && supplierSupply > 0) {
+            supplierDeltaIndex = globalLastIndex - supplierIndex;
+            uint256 supplierDeltaReward = supplierSupply.mulDiv(supplierDeltaIndex, INDEX_SCALE);
+            claimable += supplierDeltaReward;
+        }
+
+        return claimable;
     }
 }
