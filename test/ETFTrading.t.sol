@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {console} from "forge-std/console.sol";
 import {ETFQuoter} from "../src/ETFQuoter.sol";
@@ -238,6 +239,35 @@ contract ETFTradingTest is Test {
             "USDC: ",
             FormatUtils.formatTokenAmount(amounts[3], USDC_DECIMALS)
         );
+    }
+
+    function testSetFeeOnlyOwner() public {
+        vm.prank(userAddress);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Ownable.OwnableUnauthorizedAccount.selector,
+                userAddress
+            )
+        );
+        etfTrading.setFee(userAddress, 100, 3000);
+    }
+
+    function testSetFeeRejectsZeroFeeTo() public {
+        vm.prank(deployerAddress);
+        vm.expectRevert(bytes4(keccak256("InvalidFeeTo()")));
+        etfTrading.setFee(address(0), 100, 3000);
+    }
+
+    function testSetFeeRejectsInvestFeeAboveMax() public {
+        vm.prank(deployerAddress);
+        vm.expectRevert(bytes4(keccak256("FeeTooHigh()")));
+        etfTrading.setFee(feeCollectorAddress, 50_001, 3000);
+    }
+
+    function testSetFeeRejectsRedeemFeeAboveMax() public {
+        vm.prank(deployerAddress);
+        vm.expectRevert(bytes4(keccak256("FeeTooHigh()")));
+        etfTrading.setFee(feeCollectorAddress, 100, 50_001);
     }
 
     function testInvestWithToken() public {

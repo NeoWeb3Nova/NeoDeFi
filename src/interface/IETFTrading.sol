@@ -12,6 +12,8 @@ interface IETFTrading {
     error InvalidArrayLength();
     error OverSlippage();
     error SafeTransferETFFailed();
+    error InvalidFeeTo();
+    error FeeTooHigh();
 
     event InvestedWithToken(
         address indexed srcToken,

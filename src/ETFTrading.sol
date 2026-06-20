@@ -16,6 +16,7 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
     uint256 public constant FEE_DENOMINATOR = 1_000_000; // Denominator for fee calculations
     uint256 public constant DEFAULT_INVEST_FEE = 3_000; // 0.3% in basis points
     uint256 public constant DEFAULT_REDEEM_FEE = 3_000; // 0.3% in basis points
+    uint256 public constant MAX_FEE = 50_000; // 5% maximum fee
     uint256 public constant SLAPPAGE_TOLERANCE = 50_000; // 5% in basis points
 
     address internal feeTo;
@@ -66,7 +67,14 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
         address _feeTo,
         uint256 _investFee,
         uint256 _redeemFee
-    ) external override {
+    ) external override onlyOwner {
+        if (_feeTo == address(0)) {
+            revert InvalidFeeTo();
+        }
+        if (_investFee > MAX_FEE || _redeemFee > MAX_FEE) {
+            revert FeeTooHigh();
+        }
+
         feeTo = _feeTo;
         investFee = _investFee;
         redeemFee = _redeemFee;
@@ -325,11 +333,6 @@ contract ETFTrading is IETFTrading, ERC20, Ownable {
                 totalRedeemAmount += tokenAmounts[i];
             }
         }
-
-        require(
-            totalRedeemAmount >= minRedeemAmount,
-            "Under min redeem amount"
-        );
 
         if (totalRedeemAmount < minRedeemAmount) {
             revert OverSlippage();
