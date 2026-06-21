@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-21T00:00:00+08:00",
+  "title": "Design System: Neo ETF",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Ledger Blue",
+        "canonical": "#2559D6",
+        "tonalRamp": ["#EAF0FF", "#2559D6", "#1746BA"]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Cool Canvas",
+        "canonical": "#F5F7FB",
+        "tonalRamp": ["#FFFFFF", "#F5F7FB", "#DCE3EF", "#5F6C86", "#17233D"]
+      },
+      "success": {
+        "role": "success",
+        "displayName": "Confirmed Green",
+        "canonical": "#087A52",
+        "tonalRamp": ["#E8F7F1", "#087A52"]
+      },
+      "warning": {
+        "role": "warning",
+        "displayName": "Pending Amber",
+        "canonical": "#A45B0A",
+        "tonalRamp": ["#FFF4DF", "#A45B0A"]
+      },
+      "danger": {
+        "role": "danger",
+        "displayName": "Failure Red",
+        "canonical": "#C53645",
+        "tonalRamp": ["#FFF0F2", "#C53645"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Financial Display",
+        "purpose": "Page titles, balances, and decisive numerical values."
+      },
+      "body": {
+        "displayName": "Interface Body",
+        "purpose": "Navigation, field labels, transaction guidance, and supporting copy."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 10px 30px rgba(30, 49, 87, 0.06)",
+        "purpose": "Quiet separation for primary workflow surfaces."
+      },
+      {
+        "name": "dialog",
+        "value": "0 24px 70px rgba(23, 35, 61, 0.18)",
+        "purpose": "Focused elevation for transaction progress dialogs."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.22, 1, .36, 1)",
+        "purpose": "Short, calm state transitions and page entry."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Transaction Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Commits the current invest, redeem, stake, faucet, or reward action.",
+      "html": "<button class=\"ds-btn-primary\">Invest Now</button>",
+      "css": ".ds-btn-primary { min-height: 52px; padding: 0 24px; border: 0; border-radius: 12px; background: #2559D6; color: #FFFFFF; font: 700 15px Manrope, sans-serif; box-shadow: 0 10px 22px rgba(37,89,214,.18); transition: background-color 180ms cubic-bezier(.22,1,.36,1), transform 180ms cubic-bezier(.22,1,.36,1); } .ds-btn-primary:hover { background: #1746BA; } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Amount Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Large numerical input paired with balance and token context.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Amount to invest</span><input class=\"ds-amount\" value=\"0.03\" /></label>",
+      "css": ".ds-field { display: grid; gap: 10px; color: #17233D; font: 700 14px Manrope, sans-serif; } .ds-amount { width: 100%; padding: 16px; border: 1px solid #DCE3EF; border-radius: 12px; background: #FFFFFF; color: #17233D; font: 700 32px 'Space Grotesk', sans-serif; font-variant-numeric: tabular-nums; } .ds-amount:focus { outline: 3px solid rgba(37,89,214,.22); border-color: #2559D6; }"
+    },
+    {
+      "name": "Workflow Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Groups one coherent financial task without decorative card nesting.",
+      "html": "<section class=\"ds-panel\"><p class=\"ds-panel-label\">Estimated NETF received</p><strong class=\"ds-panel-value\">2.0450 NETF</strong></section>",
+      "css": ".ds-panel { padding: 24px; border: 1px solid #DCE3EF; border-radius: 16px; background: #FFFFFF; color: #17233D; box-shadow: 0 10px 30px rgba(30,49,87,.06); } .ds-panel-label { margin: 0; color: #5F6C86; font: 600 14px Manrope, sans-serif; } .ds-panel-value { display: block; margin-top: 16px; font: 700 32px 'Space Grotesk', sans-serif; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Segmented Mode Switch",
+      "kind": "nav",
+      "description": "Switches paired workflows such as Invest/Redeem and Stake/Unstake.",
+      "html": "<div class=\"ds-segment\"><button class=\"ds-segment-active\">Invest</button><button>Redeem</button></div>",
+      "css": ".ds-segment { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: #F0F4FB; } .ds-segment button { min-height: 44px; border: 0; border-radius: 8px; background: transparent; color: #5F6C86; font: 700 14px Manrope, sans-serif; } .ds-segment .ds-segment-active { background: #FFFFFF; color: #1746BA; box-shadow: 0 1px 3px rgba(23,35,61,.1); }"
+    },
+    {
+      "name": "Transaction Step",
+      "kind": "custom",
+      "description": "Makes wallet signature, chain confirmation, and balance synchronization explicit.",
+      "html": "<div class=\"ds-step\"><span class=\"ds-step-icon\">2</span><div><strong>Waiting for confirmation</strong><p>Transaction submitted to Sepolia</p></div></div>",
+      "css": ".ds-step { display: flex; align-items: flex-start; gap: 16px; color: #17233D; font-family: Manrope, sans-serif; } .ds-step-icon { display: grid; width: 40px; height: 40px; flex: none; place-items: center; border-radius: 999px; background: #EAF0FF; color: #1746BA; font-weight: 700; } .ds-step strong { font-size: 14px; } .ds-step p { margin: 4px 0 0; color: #5F6C86; font-size: 13px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clear Ledger",
+    "overview": "Neo ETF feels like a well-organized financial ledger translated into a modern product interface. Surfaces are quiet, numbers are decisive, and every transaction has an explicit state. The system avoids ornamental Web3 tropes and lets chain truth lead the hierarchy.",
+    "keyCharacteristics": [
+      "Calm financial hierarchy",
+      "Strong numerical legibility",
+      "Explicit transaction state",
+      "Restrained color and elevation",
+      "Familiar product affordances"
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Primary blue is reserved for selection, action, focus, and information rather than ambient decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Data Voice Rule",
+        "body": "Financial values use stronger weight and tabular alignment than their labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Borders and spacing establish hierarchy; elevation is reserved for primary workflow containers and dialogs.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Show wallet balance, selected network, and transaction state before irreversible actions.",
+      "Use status icons and text together.",
+      "Preserve layout dimensions while chain data loads.",
+      "Provide Etherscan evidence for submitted transactions."
+    ],
+    "donts": [
+      "Use neon cyberpunk dashboards or purple gradient surfaces.",
+      "Build generic SaaS card mosaics.",
+      "Hide contract state, transaction progress, or failure causes.",
+      "Make ordinary investors decode a terminal-style interface."
+    ]
+  }
+}
