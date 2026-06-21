@@ -102,6 +102,20 @@ $env:PRIVATE_KEY = "1"
 npm run contracts:test
 ```
 
+三个直接读取 Sepolia 已部署资产的 ETFTrading 集成测试需要 RPC：
+
+```bash
+SEPOLIA_RPC_URL=<rpc-url> PRIVATE_KEY=1 npm run contracts:test:integration
+```
+
+PowerShell：
+
+```powershell
+$env:SEPOLIA_RPC_URL = "<rpc-url>"
+$env:PRIVATE_KEY = "1"
+npm run contracts:test:integration
+```
+
 ## Sepolia 部署
 
 | 合约 / 代币 | 地址 |

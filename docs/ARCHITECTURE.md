@@ -56,6 +56,14 @@ npm run abi:check
 
 CI 会阻止 ABI 副本不一致的变更。
 
+## 测试分层
+
+默认合约 CI 不依赖第三方 RPC，执行 19 个离线测试。`testETFTokens`、`testInvestWithToken` 和 `testRedeemToToken` 会访问 Sepolia 上的已部署代币，因此作为 fork 集成测试单独运行：
+
+```bash
+SEPOLIA_RPC_URL=<rpc-url> PRIVATE_KEY=1 npm run contracts:test:integration
+```
+
 ## 网络与配置
 
 当前默认网络为 Sepolia。部署地址在 `frontend/src/constants/contracts.ts` 中提供默认值，也可以通过 `NEXT_PUBLIC_*` 环境变量覆盖。

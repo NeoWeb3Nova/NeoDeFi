@@ -10,7 +10,8 @@
     "frontend:build": "npm --prefix frontend run build",
     "contracts:fmt": "forge fmt --root contracts --check",
     "contracts:build": "forge build --root contracts --sizes",
-    "contracts:test": "forge test --root contracts -vvv",
+    "contracts:test": "forge test --root contracts -vvv --no-match-test \"testETFTokens|testInvestWithToken|testRedeemToToken\"",
+    "contracts:test:integration": "forge test --root contracts -vvv --match-test \"testETFTokens|testInvestWithToken|testRedeemToToken\" --fork-url sepolia",
     "abi:check": "node scripts/check-abi-sync.mjs",
     "check": "npm run abi:check && npm run frontend:lint && npm run frontend:build && npm run contracts:fmt && npm run contracts:build && npm run contracts:test"
   },

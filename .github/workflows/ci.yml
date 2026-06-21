@@ -50,7 +50,9 @@ jobs:
       - run: forge --version
       - run: forge fmt --check
       - run: forge build --sizes
-      - run: forge test -vvv
+      # These tests run without external RPC access. The three ETFTrading
+      # integration tests are documented separately and require a Sepolia fork.
+      - run: forge test -vvv --no-match-test "testETFTokens|testInvestWithToken|testRedeemToToken"
 
   repository:
     name: Repository consistency

@@ -20,7 +20,13 @@ npm run frontend:build
 ```bash
 forge fmt --root contracts --check
 forge build --root contracts --sizes
-PRIVATE_KEY=1 forge test --root contracts -vvv
+PRIVATE_KEY=1 npm run contracts:test
+```
+
+默认 CI 执行不需要 RPC 的 19 个测试。以下测试访问 Sepolia 已部署代币，必须使用 fork：
+
+```bash
+SEPOLIA_RPC_URL=<rpc-url> PRIVATE_KEY=1 npm run contracts:test:integration
 ```
 
 ## 提交约定

@@ -13,3 +13,6 @@ ast = true
 build_info = true
 extra_output = ["storageLayout"]
 ignored_warnings_from = ["lib/"]
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
