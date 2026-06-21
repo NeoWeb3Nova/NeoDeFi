@@ -1,0 +1,20 @@
+{
+  "name": "neo-defi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NeoDeFi monorepo containing the Neo ETF contracts and frontend.",
+  "scripts": {
+    "setup": "git submodule update --init --recursive && npm --prefix frontend ci",
+    "dev": "npm --prefix frontend run dev",
+    "frontend:lint": "npm --prefix frontend run lint",
+    "frontend:build": "npm --prefix frontend run build",
+    "contracts:fmt": "forge fmt --root contracts --check",
+    "contracts:build": "forge build --root contracts --sizes",
+    "contracts:test": "forge test --root contracts -vvv",
+    "abi:check": "node scripts/check-abi-sync.mjs",
+    "check": "npm run abi:check && npm run frontend:lint && npm run frontend:build && npm run contracts:fmt && npm run contracts:build && npm run contracts:test"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

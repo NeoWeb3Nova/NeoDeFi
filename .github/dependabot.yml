@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    groups:
+      frontend-runtime:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+      web3:
+        patterns:
+          - "@rainbow-me/*"
+          - "@tanstack/*"
+          - "viem"
+          - "wagmi"
+
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
