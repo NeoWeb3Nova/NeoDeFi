@@ -10,9 +10,9 @@ import {ETFFaucet} from "../src/ETFFaucet.sol";
 contract DeployETFFaucet is Script {
     address public faucetContractAddress;
 
-    address public constant NBTC_ADDRESS = 0xB02956728Ef9B72AdB805a5507024216dD8F0Cba; 
-    address public constant NETH_ADDRESS = 0x027f8455B1a6df72a49B8364BABaEbf8F38D20Bf; 
-    address public constant LINK_ADDRESS = 0x028268f8fF62edc596f931E17E2Fb21015f5b0A2; 
+    address public constant NBTC_ADDRESS = 0xB02956728Ef9B72AdB805a5507024216dD8F0Cba;
+    address public constant NETH_ADDRESS = 0x027f8455B1a6df72a49B8364BABaEbf8F38D20Bf;
+    address public constant LINK_ADDRESS = 0x028268f8fF62edc596f931E17E2Fb21015f5b0A2;
     address public constant USDC_ADDRESS = 0x45D2b305d3e2C91b0685A3E7c83bF6D201B88aA2;
 
     function run() external {

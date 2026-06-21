@@ -2,17 +2,20 @@
 
 Next.js + Wagmi + Viem + RainbowKit + Tailwind CSS frontend for Neo ETF.
 
+> This frontend is maintained as part of the
+> [NeoDeFi monorepo](https://github.com/NeoWeb3Nova/NeoDeFi). Run repository-level
+> setup and validation commands from the NeoDeFi root when possible.
+
 ## Run
 
 ```bash
-cp .env.example .env.local
-npm install
+npm ci
 npm run dev
 ```
 
-The current Sepolia deployment addresses are built in as defaults. Copy
-`.env.example` to `.env.local` when you want to override them or configure a
-WalletConnect project ID.
+The current Sepolia deployment addresses are built in as defaults. Create
+`.env.local` only when you need to override them or configure a WalletConnect
+project ID.
 
 `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` must be a real Reown/WalletConnect
 project ID. If it is left empty, the app intentionally uses injected browser
