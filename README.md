@@ -8,15 +8,35 @@ NeoDeFi 是一个面向链上资产管理的 DeFi 项目。当前核心产品 **
 
 Neo ETF 前端包含五个核心页面，覆盖投资、资产管理、质押与奖励的完整流程：
 
-| 资产总览 | 投资与赎回 | 质押中心 |
-| --- | --- | --- |
-| 查看钱包余额、NETF 持仓与篮子资产权重 | 使用单一代币投资或赎回 NETF | 质押 NETF 获取 NRWD 挖矿奖励 |
-| ![资产总览](frontend/assets/images/portfolio.png) | ![投资与赎回](frontend/assets/images/trade.png) | ![质押中心](frontend/assets/images/stake.png) |
+### 资产总览 (Portfolio)
 
-| 奖励中心 | 测试水龙头 |
-| --- | --- |
-| 查看并领取 NRWD 奖励 | 领取 Sepolia 测试网代币 |
-| ![奖励中心](frontend/assets/images/rewards.png) | ![测试水龙头](frontend/assets/images/faucet.png) |
+查看钱包余额、NETF 持仓与篮子资产权重，实时掌握投资组合全貌。
+
+![资产总览](frontend/assets/images/portfolio.png)
+
+### 投资与赎回 (Trade)
+
+使用单一代币投资或赎回 NETF，一键完成链上指数产品的买卖操作。
+
+![投资与赎回](frontend/assets/images/trade.png)
+
+### 质押中心 (Stake)
+
+质押 NETF 获取 NRWD 挖矿奖励，让闲置资产持续产生收益。
+
+![质押中心](frontend/assets/images/stake.png)
+
+### 奖励中心 (Rewards)
+
+查看并领取 NRWD 奖励，追踪所有待领取和已领取的奖励记录。
+
+![奖励中心](frontend/assets/images/rewards.png)
+
+### 测试水龙头 (Faucet)
+
+领取 Sepolia 测试网代币，获取 ETH、NBTC、NETH、LINK、USDC 等测试资产。
+
+![测试水龙头](frontend/assets/images/faucet.png)
 
 ## 仓库结构
 
