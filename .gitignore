@@ -27,6 +27,9 @@ frontend/*.tsbuildinfo
 frontend/next-env.d.ts
 
 # Foundry
+/cache/
+/lib/
+/out/
 contracts/cache/
 contracts/out/
 contracts/.logs/
