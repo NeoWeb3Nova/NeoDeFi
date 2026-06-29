@@ -39,6 +39,9 @@
   --reward-to: #080d15;
   --option-bg: #101722;
   --option-text: #f2f7f6;
+  --skeleton-from: #151e2b;
+  --skeleton-via: #223044;
+  --skeleton-shadow: rgba(0, 0, 0, 0.1);
 }
 
 html[data-theme="light"] {
@@ -76,6 +79,9 @@ html[data-theme="light"] {
   --reward-to: #e7f1ee;
   --option-bg: #ffffff;
   --option-text: #13201e;
+  --skeleton-from: rgba(8, 127, 103, 0.08);
+  --skeleton-via: rgba(8, 127, 103, 0.18);
+  --skeleton-shadow: rgba(8, 127, 103, 0.08);
 }
 
 @theme inline {
@@ -91,6 +97,9 @@ html[data-theme="light"] {
 html {
   background: var(--background);
   color-scheme: dark;
+}
+html[data-theme="light"] {
+  color-scheme: light;
 }
 body {
   margin: 0;
@@ -304,8 +313,14 @@ html[data-theme="light"] .panel {
   min-width: 6ch;
   border-radius: 6px;
   color: transparent;
-  background: linear-gradient(90deg, #151e2b 25%, #223044 50%, #151e2b 75%);
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-from) 25%,
+    var(--skeleton-via) 50%,
+    var(--skeleton-from) 75%
+  );
   background-size: 200% 100%;
+  box-shadow: inset 0 0 0 1px var(--skeleton-shadow);
   animation: shimmer 1.3s ease-in-out infinite;
 }
 @keyframes shimmer {
