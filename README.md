@@ -4,6 +4,20 @@ NeoDeFi 是一个面向链上资产管理的 DeFi 项目。当前核心产品 **
 
 本仓库是 NeoDeFi 的唯一主仓库，同时维护智能合约和前端应用。
 
+## 核心页面
+
+Neo ETF 前端包含五个核心页面，覆盖投资、资产管理、质押与奖励的完整流程：
+
+| 资产总览 | 投资与赎回 | 质押中心 |
+| --- | --- | --- |
+| 查看钱包余额、NETF 持仓与篮子资产权重 | 使用单一代币投资或赎回 NETF | 质押 NETF 获取 NRWD 挖矿奖励 |
+| ![资产总览](frontend/assets/images/portfolio.png) | ![投资与赎回](frontend/assets/images/trade.png) | ![质押中心](frontend/assets/images/stake.png) |
+
+| 奖励中心 | 测试水龙头 |
+| --- | --- |
+| 查看并领取 NRWD 奖励 | 领取 Sepolia 测试网代币 |
+| ![奖励中心](frontend/assets/images/rewards.png) | ![测试水龙头](frontend/assets/images/faucet.png) |
+
 ## 仓库结构
 
 ```text
