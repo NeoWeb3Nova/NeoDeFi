@@ -1,6 +1,30 @@
-# NeoDeFi
+<p align="center">
+  <img src="frontend/src/app/icon.svg" alt="NeoDeFi" width="88" height="88" />
+</p>
 
-NeoDeFi is a DeFi project for onchain asset management. Its first product, **Neo ETF**, packages several assets into one index token that users can mint, redeem, stake, and track from a web interface.
+<h1 align="center">NeoDeFi</h1>
+
+<p align="center">
+  An onchain asset management DeFi platform. Its first product, <strong>Neo ETF</strong>, packages several assets into one index token that users can mint, redeem, stake, and track from a web interface.
+</p>
+
+<p align="center">
+  <a href="README.md">中文</a>
+  ·
+  <a href="README.en.md"><strong>English</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/NeoWeb3Nova/NeoDeFi/actions/workflows/ci.yml">
+    <img src="https://github.com/NeoWeb3Nova/NeoDeFi/actions/workflows/ci.yml/badge.svg" alt="CI" />
+  </a>
+  <img src="https://img.shields.io/badge/network-Sepolia-3cf2c3" alt="Sepolia" />
+  <img src="https://img.shields.io/badge/contracts-Solidity-363636" alt="Solidity" />
+  <img src="https://img.shields.io/badge/frontend-Next.js-000000" alt="Next.js" />
+  <img src="https://img.shields.io/badge/web3-Wagmi%20%2B%20Viem-6b8cff" alt="Wagmi and Viem" />
+</p>
+
+---
 
 This repository is the main NeoDeFi monorepo. It contains the Solidity contracts, deployment scripts, ABI artifacts, frontend app, and CI checks.
 

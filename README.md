@@ -1,6 +1,30 @@
-# NeoDeFi
+<p align="center">
+  <img src="frontend/src/app/icon.svg" alt="NeoDeFi" width="88" height="88" />
+</p>
 
-NeoDeFi 是一个面向链上资产管理的 DeFi 项目。当前核心产品 **Neo ETF** 将多种资产组合成一个可投资、赎回和质押的链上指数产品。
+<h1 align="center">NeoDeFi</h1>
+
+<p align="center">
+  面向链上资产管理的 DeFi 平台。核心产品 <strong>Neo ETF</strong> 将多种资产组合成一个可投资、赎回和质押的链上指数产品。
+</p>
+
+<p align="center">
+  <a href="README.md"><strong>中文</strong></a>
+  ·
+  <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/NeoWeb3Nova/NeoDeFi/actions/workflows/ci.yml">
+    <img src="https://github.com/NeoWeb3Nova/NeoDeFi/actions/workflows/ci.yml/badge.svg" alt="CI" />
+  </a>
+  <img src="https://img.shields.io/badge/network-Sepolia-3cf2c3" alt="Sepolia" />
+  <img src="https://img.shields.io/badge/contracts-Solidity-363636" alt="Solidity" />
+  <img src="https://img.shields.io/badge/frontend-Next.js-000000" alt="Next.js" />
+  <img src="https://img.shields.io/badge/web3-Wagmi%20%2B%20Viem-6b8cff" alt="Wagmi and Viem" />
+</p>
+
+---
 
 本仓库是 NeoDeFi 的唯一主仓库，同时维护智能合约和前端应用。
 
