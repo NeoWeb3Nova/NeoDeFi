@@ -27,9 +27,16 @@ export function usePortfolioBalances() {
       return [symbol, value === undefined ? "--" : formatToken(value, TOKENS[symbol].decimals)];
     }),
   ) as Record<TokenSymbol, string>;
+  const rawBalances = Object.fromEntries(
+    symbols.map((symbol, index) => [
+      symbol,
+      reads.data?.[index]?.result as bigint | undefined,
+    ]),
+  ) as Record<TokenSymbol, bigint | undefined>;
 
   return {
     balances,
+    rawBalances,
     nativeBalance: native.data ? formatToken(native.data.value, native.data.decimals) : "--",
     refetch: async () => {
       await Promise.all([native.refetch(), reads.refetch()]);
